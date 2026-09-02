@@ -1,0 +1,1915 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Career Copilot — Dark concept</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Sora:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#F2F3EF; --raised:#FFFFFF; --ink:#1C2321; --ink-muted:#5B5F58; --ink-faint:#8A8D84;
+    --line:#D8DAD2; --ledger:#1F6F5C; --ledger-soft:#E3EFEA; --ledger-ink:#0E3A30;
+    --flag:#B9702F; --flag-soft:#F4E7D8; --flag-ink:#5A3A16; --radius:5px;
+    --font-display:'Space Grotesk',sans-serif; --font-body:'IBM Plex Sans',sans-serif; --font-mono:'IBM Plex Mono',monospace;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{background:var(--paper);color:var(--ink);font-family:var(--font-body);font-size:15px;line-height:1.5;-webkit-font-smoothing:antialiased;}
+  @media (prefers-reduced-motion: reduce){*{animation:none !important;transition:none !important;}}
+  h1,h2,h3{font-family:var(--font-display);font-weight:600;margin:0;letter-spacing:-0.01em;}
+  a{color:inherit;} button{font-family:var(--font-body);cursor:pointer;} .mono{font-family:var(--font-mono);}
+
+  .shell{display:flex;min-height:100vh;}
+  .sidebar{width:216px;flex-shrink:0;background:var(--raised);border-right:1px solid var(--line);padding:28px 18px;display:flex;flex-direction:column;position:sticky;top:0;height:100vh;overflow-y:auto;}
+  .wordmark{font-family:var(--font-display);font-size:19px;font-weight:700;margin-bottom:4px;}
+  .wordmark span{color:var(--ledger);}
+  .tagline{font-size:11px;color:var(--ink-faint);margin-bottom:30px;letter-spacing:0.02em;}
+  .nav{display:flex;flex-direction:column;gap:2px;}
+  .nav-item{display:flex;align-items:center;gap:10px;padding:9px 10px;border-radius:var(--radius);font-size:13.5px;font-weight:500;color:var(--ink-muted);border:1px solid transparent;background:none;text-align:left;width:100%;}
+  .nav-item svg{flex-shrink:0;opacity:0.75;}
+  .nav-item:hover{background:var(--paper);}
+  .nav-item.active{background:var(--ledger-soft);color:var(--ledger-ink);border-color:var(--ledger);}
+  .nav-item.active svg{opacity:1;}
+  .sidebar-foot{margin-top:auto;font-size:11px;color:var(--ink-faint);padding-top:20px;border-top:1px solid var(--line);}
+
+  .main{flex:1;min-width:0;}
+  .prototype-notice{max-width:980px;margin:22px auto 0;padding:12px 16px;border:1px solid #D5A46F;border-radius:8px;background:var(--flag-soft);color:var(--flag-ink);font-size:12px;line-height:1.55;}
+  .prototype-notice strong{font-weight:600;}
+  .view{display:none;padding:36px 40px 100px;max-width:980px;margin:0 auto;animation:fadeIn .25s ease;}
+  .view.active{display:block;}
+  @keyframes fadeIn{from{opacity:0;transform:translateY(4px);}to{opacity:1;transform:none;}}
+
+  .view-head{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:22px;gap:16px;flex-wrap:wrap;}
+  .view-head h1{font-size:23px;}
+  .view-sub{font-size:13px;color:var(--ink-muted);margin-top:4px;}
+  .head-actions{display:flex;gap:8px;flex-wrap:wrap;}
+
+  .btn{font-size:13px;font-weight:500;padding:8px 14px;border-radius:var(--radius);border:1px solid var(--line);background:var(--raised);color:var(--ink);display:inline-flex;align-items:center;gap:6px;white-space:nowrap;}
+  .btn:hover{border-color:var(--ink-faint);}
+  .btn-primary{background:var(--ledger);border-color:var(--ledger);color:#fff;}
+  .btn-primary:hover{background:var(--ledger-ink);border-color:var(--ledger-ink);}
+  .btn-danger{color:#7A2E27;border-color:#CFA39E;background:#FFF8F7;}
+  .btn-danger:hover{color:#fff;border-color:#7A2E27;background:#7A2E27;}
+  .btn-sm{padding:5px 10px;font-size:12px;}
+  .btn-block{width:100%;justify-content:center;}
+  .btn:disabled{opacity:0.35;cursor:default;}
+
+  .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:30px;}
+  .card{background:var(--raised);border:1px solid var(--line);border-radius:8px;padding:20px;}
+  .card-icon{width:30px;height:30px;border-radius:6px;background:var(--ledger-soft);color:var(--ledger-ink);display:flex;align-items:center;justify-content:center;margin-bottom:12px;}
+  .card h3{font-size:15px;margin-bottom:5px;} .card p{font-size:12.5px;color:var(--ink-muted);margin:0 0 14px;}
+
+  .section-label{font-size:12px;font-weight:500;color:var(--ink-muted);text-transform:uppercase;letter-spacing:0.04em;margin-bottom:10px;}
+  .list-row{display:flex;justify-content:space-between;align-items:center;padding:11px 2px;border-bottom:1px solid var(--line);gap:12px;}
+  .list-row:first-child{border-top:1px solid var(--line);}
+  .list-row .role{font-size:13.5px;font-weight:500;} .list-row .company{font-size:11.5px;color:var(--ink-muted);}
+  .badge{font-family:var(--font-mono);font-size:11px;font-weight:500;padding:2px 8px;border-radius:20px;white-space:nowrap;}
+  .badge-good{background:var(--ledger-soft);color:var(--ledger-ink);}
+  .badge-warn{background:var(--flag-soft);color:var(--flag-ink);}
+  .badge-flat{background:var(--paper);color:var(--ink-muted);border:1px solid var(--line);}
+
+  .search-row{display:flex;gap:10px;margin-bottom:18px;flex-wrap:wrap;}
+  .search-row input{flex:1;min-width:180px;padding:9px 12px;border:1px solid var(--line);border-radius:var(--radius);font-size:13.5px;font-family:var(--font-body);background:var(--raised);height:36px;}
+  .search-row input:focus{outline:2px solid var(--ledger);outline-offset:1px;}
+  .skill-card{background:var(--raised);border:1px solid var(--line);border-radius:8px;padding:16px 18px;margin-bottom:12px;cursor:pointer;}
+  .skill-card:hover{border-color:var(--ink-faint);}
+  .skill-top{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;margin-bottom:8px;}
+  .skill-id{font-family:var(--font-mono);font-size:11px;color:var(--ink-faint);}
+  .skill-name{font-size:14.5px;font-weight:600;margin-top:2px;}
+  .skill-cat{font-size:11.5px;color:var(--ink-muted);margin-top:1px;}
+  .skill-evidence{font-size:12.5px;color:var(--ink-muted);line-height:1.55;margin:9px 0;}
+  .skill-note{font-size:11.5px;color:var(--flag-ink);background:var(--flag-soft);border-radius:4px;padding:6px 9px;margin-top:9px;}
+  .edit-hint{font-size:10.5px;color:var(--ink-faint);margin-top:8px;}
+  .chips{display:flex;flex-wrap:wrap;gap:5px;margin-top:9px;}
+  .chip{font-size:10.5px;font-family:var(--font-mono);background:var(--paper);border:1px solid var(--line);border-radius:3px;padding:2px 7px;color:var(--ink-muted);}
+  .prof-badge{font-size:10.5px;font-family:var(--font-mono);padding:2px 8px;border-radius:3px;text-transform:uppercase;letter-spacing:0.03em;}
+  .prof-Experienced{background:var(--ledger-soft);color:var(--ledger-ink);}
+  .prof-Foundational,.prof-Working{background:var(--flag-soft);color:var(--flag-ink);}
+
+  .panel{background:var(--raised);border:1px solid var(--line);border-radius:8px;padding:18px 20px;margin-bottom:16px;}
+  .field-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px;}
+  .field-grid.full{grid-template-columns:1fr;}
+  .field-input,.field-grid input,.field-grid select,.field-grid textarea{padding:8px 10px;border:1px solid var(--line);border-radius:var(--radius);font-size:12.5px;font-family:var(--font-body);width:100%;background:var(--paper);}
+  input.field-input, select.field-input, .field-grid input, .field-grid select{height:34px;}
+  textarea.field-input{height:auto;}
+  select{-webkit-appearance:none;-moz-appearance:none;appearance:none;
+    background-image:url("data:image/svg+xml;charset=UTF-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Cpath fill='%235B5F58' d='M2 4l4 4 4-4z'/%3E%3C/svg%3E");
+    background-repeat:no-repeat;background-position:right 9px center;background-size:9px;padding-right:26px;}
+  .field-label{font-size:10.5px;color:var(--ink-faint);text-transform:uppercase;letter-spacing:0.03em;display:flex;align-items:center;gap:4px;margin-bottom:4px;}
+  .field-error{color:var(--flag-ink);font-size:10.5px;margin-top:3px;min-height:13px;}
+  .info-icon{position:relative;display:inline-flex;align-items:center;justify-content:center;width:13px;height:13px;border-radius:50%;
+    border:1px solid var(--ink-faint);color:var(--ink-faint);font-size:9px;font-style:italic;font-family:Georgia,serif;cursor:help;
+    text-transform:none;letter-spacing:0;flex-shrink:0;}
+  .info-icon .tip{display:none;position:absolute;bottom:135%;left:50%;transform:translateX(-50%);background:var(--ink);color:#fff;
+    font-size:11px;font-style:normal;font-family:var(--font-body);font-weight:400;padding:8px 10px;border-radius:5px;width:220px;
+    line-height:1.45;white-space:normal;z-index:30;box-shadow:0 4px 14px rgba(0,0,0,0.18);}
+  .info-icon:hover .tip,.info-icon:focus .tip{display:block;}
+  .form-actions{display:flex;gap:8px;justify-content:flex-end;}
+  .suggest-row{display:flex;align-items:flex-start;gap:10px;padding:10px 0;border-bottom:1px solid var(--line);}
+  .suggest-row:last-of-type{border-bottom:none;}
+  .suggest-row input[type=checkbox]{margin-top:3px;}
+  .suggest-name{font-size:13px;font-weight:600;}
+  .suggest-evidence{font-size:11.5px;color:var(--ink-muted);margin-top:2px;}
+  .checkin-current{display:flex;align-items:center;gap:6px;font-size:11.5px;color:var(--ink-muted);margin-top:6px;}
+
+  textarea{width:100%;min-height:150px;padding:12px 14px;border:1px solid var(--line);border-radius:var(--radius);font-family:var(--font-body);font-size:13.5px;resize:vertical;background:var(--raised);}
+  textarea:focus,input:focus,select:focus{outline:2px solid var(--ledger);outline-offset:1px;}
+  .link-row{display:flex;gap:8px;margin-bottom:8px;}
+  .link-row input{flex:1;padding:9px 12px;border:1px solid var(--line);border-radius:var(--radius);font-size:13px;background:var(--raised);height:36px;}
+  .fetch-status{font-size:11.5px;color:var(--ink-faint);margin-bottom:14px;min-height:15px;}
+  .or-divider{font-size:10.5px;color:var(--ink-faint);text-transform:uppercase;letter-spacing:0.05em;margin:2px 0 8px;}
+  .analysis-status{min-height:48px;margin-top:12px;}
+  .analysis-working{display:flex;align-items:center;gap:11px;border:1px solid var(--line);border-radius:8px;background:var(--raised);padding:11px 14px;color:var(--ink-muted);font-size:12px;line-height:1.45;}
+  .analysis-working strong{color:var(--ink);font-weight:600;}
+  .analysis-spinner{width:18px;height:18px;flex-shrink:0;border:2px solid var(--line);border-top-color:var(--ledger);border-radius:50%;animation:analysisSpin .75s linear infinite;}
+  .analysis-ready,.analysis-complete,.analysis-message{display:block;font-size:12px;color:var(--ink-muted);}
+  .analysis-complete{color:var(--ledger-ink);}
+  .analysis-message{color:var(--flag-ink);}
+  @keyframes analysisSpin{to{transform:rotate(360deg);}}
+  .tailor-grid{display:grid;grid-template-columns:2fr 1fr;gap:20px;margin-top:8px;align-items:start;}
+  .resume-preview{background:var(--raised);border:1px solid var(--line);border-radius:8px;padding:22px 24px;}
+  .resume-preview h2{font-size:17px;margin-bottom:2px;}
+  .resume-preview .contact{font-size:11.5px;color:var(--ink-muted);margin-bottom:14px;}
+  .resume-preview h4{font-size:11.5px;text-transform:uppercase;letter-spacing:0.04em;color:var(--ink-muted);margin:16px 0 7px;font-family:var(--font-body);font-weight:600;}
+  .resume-preview ul{margin:0 0 4px;padding-left:18px;font-size:13px;line-height:1.6;}
+  .job-block{margin-bottom:12px;}
+  .job-block .job-title{font-weight:600;font-size:13px;}
+  .job-block .job-dates{font-size:11px;color:var(--ink-muted);margin-bottom:4px;}
+  .match-panel{background:var(--raised);border:1px solid var(--line);border-radius:8px;padding:18px 20px;position:sticky;top:20px;}
+  .match-score{font-family:var(--font-display);font-size:34px;font-weight:700;color:var(--ledger-ink);}
+  .match-label{font-size:11px;color:var(--ink-faint);margin-bottom:2px;}
+  .match-list{margin:14px 0;}
+  .match-list-item{display:flex;gap:7px;align-items:flex-start;font-size:12px;margin-bottom:7px;}
+  .empty-hint{font-size:12px;color:var(--ink-faint);text-align:center;padding:40px 10px;}
+  .dl-row{display:flex;flex-direction:column;gap:7px;margin-top:14px;}
+  .add-tracker-box{border-top:1px solid var(--line);margin-top:14px;padding-top:14px;}
+  .add-tracker-box input{margin-bottom:7px;}
+  .controls-sub{font-size:11px;color:var(--ink-faint);margin:2px 0 10px;}
+  .roles-reorder-row{display:flex;align-items:center;gap:8px;margin-bottom:6px;}
+  .roles-reorder-row label{display:flex;align-items:center;gap:6px;flex:1;font-size:12px;color:var(--ink-muted);}
+
+  .filter-row{display:flex;gap:10px;margin-bottom:14px;flex-wrap:wrap;}
+  .filter-row select{padding:7px 10px;border:1px solid var(--line);border-radius:var(--radius);font-size:12.5px;background:var(--raised);font-family:var(--font-body);height:34px;}
+  .tracker-table{width:100%;border-collapse:collapse;font-size:13px;}
+  .tracker-table th{text-align:left;font-size:11px;text-transform:uppercase;letter-spacing:0.03em;color:var(--ink-faint);font-weight:500;padding:0 8px 8px 0;border-bottom:1px solid var(--line);white-space:nowrap;}
+  .tracker-table th.sortable{cursor:pointer;user-select:none;}
+  .tracker-table th.sortable:hover{color:var(--ink-muted);}
+  .tracker-table td{padding:11px 8px 11px 0;border-bottom:1px solid var(--line);vertical-align:top;}
+  .tracker-table tr.data-row{cursor:pointer;}
+  .tracker-table tr.data-row:hover{background:rgba(31,111,92,0.03);}
+  .detail-row td{background:var(--paper);}
+  .detail-box{padding:14px 16px;}
+  .tracker-links a{font-size:11.5px;color:var(--ledger-ink);text-decoration:none;display:block;margin-bottom:2px;}
+  .tracker-links a:hover{text-decoration:underline;}
+  .tracker-links .muted{display:block;color:var(--ink-faint);font-size:11.5px;}
+  .note-entry{font-size:12.5px;padding:7px 0;border-bottom:1px solid var(--line);}
+  .note-entry:last-child{border-bottom:none;}
+  .note-entry-view{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;}
+  .note-entry-copy{min-width:0;}
+  .note-entry-actions{display:flex;gap:9px;flex-shrink:0;opacity:.38;transition:opacity .15s ease;}
+  .note-entry-view:hover .note-entry-actions,.note-entry-view:focus-within .note-entry-actions{opacity:1;}
+  .note-action{padding:0;border:0;background:none;color:var(--ink-faint);font-family:var(--font-body);font-size:10.5px;line-height:1.4;text-decoration:underline;text-decoration-color:transparent;text-underline-offset:3px;cursor:pointer;}
+  .note-action:hover,.note-action:focus-visible{color:var(--ink-muted);text-decoration-color:currentColor;outline:none;}
+  .note-action-delete:hover,.note-action-delete:focus-visible{color:#7A2E27;}
+  .note-date{color:var(--ink-faint);margin-right:8px;}
+  .notes-add-row{display:flex;gap:8px;margin-top:10px;}
+  .source-new-row{display:flex;align-items:center;gap:5px;}
+  .source-new-row .field-input{min-width:0;}
+  .add-row{background:var(--raised);border:1px solid var(--line);border-radius:8px;padding:16px 18px;margin-bottom:20px;}
+  .add-row .fields{display:grid;grid-template-columns:1.2fr 1fr 0.85fr 1fr 0.9fr;gap:10px;margin-bottom:10px;}
+  .add-row input,.add-row select{padding:8px 10px;border:1px solid var(--line);border-radius:var(--radius);font-size:12.5px;font-family:var(--font-body);width:100%;background:var(--paper);height:34px;}
+  .foot-note{font-size:11px;color:var(--ink-faint);margin-top:16px;}
+  #followup-section{margin-bottom:26px;}
+
+  .profile-row{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid var(--line);}
+  .profile-row:last-child{border-bottom:none;}
+  .profile-row .p-label{width:130px;font-size:12.5px;color:var(--ink-muted);flex-shrink:0;display:flex;align-items:center;gap:8px;}
+  .profile-row input[type=text]{flex:1;padding:8px 10px;border:1px solid var(--line);border-radius:var(--radius);font-size:13px;background:var(--paper);font-family:var(--font-body);height:34px;}
+  .profile-hint{font-size:11px;color:var(--ink-faint);margin-top:10px;}
+  .profile-block{padding:14px 0;border-bottom:1px solid var(--line);}
+  .profile-block:last-child{border-bottom:none;}
+  .profile-block-head{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:10px;}
+  .dyn-row{display:flex;gap:8px;align-items:center;margin-bottom:7px;}
+  .dyn-row select{max-width:150px;}
+
+  .tabbar{display:none;}
+  .confirm-backdrop{position:fixed;inset:0;z-index:1000;display:flex;align-items:center;justify-content:center;padding:20px;background:rgba(28,35,33,0.48);}
+  .confirm-backdrop[hidden]{display:none;}
+  .confirm-dialog{width:min(430px,100%);background:var(--raised);border:1px solid var(--line);border-radius:10px;padding:22px;box-shadow:0 18px 55px rgba(28,35,33,0.22);}
+  .confirm-kicker{font-family:var(--font-mono);font-size:10.5px;letter-spacing:0.06em;text-transform:uppercase;color:#7A2E27;margin-bottom:8px;}
+  .confirm-dialog h2{font-size:19px;margin-bottom:8px;}
+  .confirm-dialog p{font-size:13px;line-height:1.55;color:var(--ink-muted);margin:0 0 20px;}
+  .confirm-actions{display:flex;justify-content:flex-end;gap:8px;}
+  @media (max-width:760px){
+    .sidebar{display:none;}
+    .prototype-notice{margin:14px 18px 0;}
+    .tabbar{display:flex;position:fixed;bottom:0;left:0;right:0;z-index:10;background:var(--raised);border-top:1px solid var(--line);padding:6px 1px calc(6px + env(safe-area-inset-bottom));overflow-x:auto;}
+    .tabbar button{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;background:none;border:none;font-size:9.5px;color:var(--ink-faint);padding:6px 1px;font-family:var(--font-body);min-width:52px;}
+    .tabbar button.active{color:var(--ledger-ink);}
+    .view{padding:22px 18px 92px;}
+    .grid-2{grid-template-columns:1fr;} .field-grid{grid-template-columns:1fr;}
+    .tailor-grid{grid-template-columns:1fr;} .match-panel{position:static;}
+    .add-row .fields{grid-template-columns:1fr;}
+    .filter-row{flex-direction:column;}
+    .profile-row{flex-wrap:wrap;}
+    .tracker-table thead{display:none;}
+    .tracker-table, .tracker-table tbody, .tracker-table tr, .tracker-table td{display:block;width:100%;}
+    .tracker-table tr.data-row{border-bottom:1px solid var(--line);padding:12px 0;}
+    .detail-row{border-bottom:1px solid var(--line);}
+    .tracker-table td{border:none;padding:3px 0;}
+    .tracker-table td::before{content:attr(data-label);display:inline-block;width:88px;font-size:10.5px;color:var(--ink-faint);text-transform:uppercase;letter-spacing:0.03em;}
+    .note-entry-actions{opacity:.72;}
+    .note-action{padding:2px 0;font-size:11px;}
+  }
+
+  /* ============================================================
+     DARK CONCEPT — appended after the base theme so it wins on
+     source order. Everything below is presentation only: no
+     markup, no script, no behaviour is changed by this block.
+     ============================================================ */
+  :root{
+    --paper:#070A16; --raised:#10152A; --ink:#E6EAF7; --ink-muted:#A9B2D0; --ink-faint:#8E98BD;
+    --line:#232A47; --ledger:#4F7CFF; --ledger-soft:#1A2244; --ledger-ink:#A8C0FF;
+    --flag:#FBBF24; --flag-soft:#2C2415; --flag-ink:#FBBF24;
+    --danger:#F87171; --danger-soft:#2A1719; --danger-line:#7A3B3B;
+    --radius:10px;
+    --font-display:'Sora','Space Grotesk',sans-serif;
+    --font-body:'Inter','IBM Plex Sans',sans-serif;
+  }
+  body{background:var(--paper);color:var(--ink);}
+  /* grid + glow, lifted from the Sticklight page */
+  body::before{content:"";position:fixed;inset:0;z-index:0;pointer-events:none;
+    background-image:linear-gradient(#ffffff08 1px,transparent 1px),linear-gradient(90deg,#ffffff08 1px,transparent 1px);
+    background-size:64px 64px;}
+  body::after{content:"";position:fixed;top:-320px;left:50%;width:900px;height:520px;transform:translateX(-50%);
+    border-radius:9999px;background:rgba(79,124,255,.16);filter:blur(140px);z-index:0;pointer-events:none;}
+  .shell{position:relative;z-index:1;}
+  /* Informational, not a warning -- the amber read as an alert against the
+     navy. Same blue/violet panel treatment as the reference page's
+     "Copilot insight" card, so it sits inside the palette. */
+  .prototype-notice{position:relative;z-index:1;
+    background:linear-gradient(135deg,rgba(79,124,255,.12),rgba(139,92,246,.10));
+    border-color:rgba(79,124,255,.30); color:#C3D0F0;}
+  .prototype-notice strong{color:#A8C0FF;}
+
+  .sidebar{background:linear-gradient(180deg,#0B1020 0%,#070A16 100%);border-right-color:var(--line);}
+  .wordmark{color:#fff;}
+  .wordmark span{background:linear-gradient(100deg,#7DA1FF,#8B5CF6);
+    -webkit-background-clip:text;background-clip:text;color:transparent;}
+  .nav-item:hover{background:rgba(255,255,255,.05);}
+  .nav-item.active{background:rgba(79,124,255,.12);color:#fff;border-color:rgba(79,124,255,.4);}
+  .sidebar-foot{border-top-color:var(--line);}
+
+  .btn{background:var(--raised);border-color:var(--line);color:var(--ink);}
+  .btn:hover{border-color:#3A4470;background:#141A33;}
+  .btn-primary{background:linear-gradient(90deg,#4F7CFF,#8B5CF6);border-color:transparent;color:#fff;
+    box-shadow:0 8px 24px rgba(79,124,255,.25);}
+  .btn-primary:hover{background:linear-gradient(90deg,#3E6BEE,#7C4DEB);border-color:transparent;}
+  .btn-danger{color:#FCA5A5;border-color:var(--danger-line);background:var(--danger-soft);}
+  .btn-danger:hover{color:#fff;border-color:#B94A4A;background:#B94A4A;}
+
+  .card,.panel,.skill-card,.add-row,.match-panel{background:var(--raised);border-color:var(--line);}
+  .card:hover,.skill-card:hover{border-color:rgba(79,124,255,.4);}
+  .card-icon{background:rgba(79,124,255,.12);color:#A8C0FF;}
+
+  /* form controls — the reference page had none of these, so they're designed here */
+  textarea,input,select,.field-input,.field-grid input,.field-grid select,.field-grid textarea,
+  .search-row input,.link-row input,.add-row input,.add-row select,.filter-row select,
+  .profile-row input[type=text],.profile-row input[type=date]{
+    background:#0B1020;border-color:var(--line);color:var(--ink);}
+  input::placeholder,textarea::placeholder{color:#6B7499;}
+  select{background-image:url("data:image/svg+xml;charset=UTF-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Cpath fill='%23A9B2D0' d='M2 4l4 4 4-4z'/%3E%3C/svg%3E");}
+  input[type=date]{color-scheme:dark;}
+
+  .tracker-table th,.tracker-table td{border-bottom-color:var(--line);}
+  .tracker-table tr.data-row:hover{background:rgba(79,124,255,.07);}
+  .detail-row td{background:#0B1020;}
+
+  .badge-good{background:rgba(52,211,153,.12);color:#6EE7B7;}
+  .badge-warn{background:rgba(251,191,36,.12);color:#FCD34D;}
+  .badge-flat{background:rgba(255,255,255,.05);color:var(--ink-muted);border-color:var(--line);}
+  /* Left token-driven on purpose: --paper resolves dark in the app chrome
+     and light inside .resume-preview, so chips follow their surface. */
+  .chip{background:var(--paper);border-color:var(--line);color:var(--ink-muted);}
+  .prof-Experienced{background:rgba(79,124,255,.14);color:#A8C0FF;}
+  .prof-Foundational,.prof-Working{background:rgba(251,191,36,.12);color:#FCD34D;}
+
+  /* .info-icon .tip paints itself with var(--ink); once --ink is a light text
+     colour that renders white-on-white, so it needs its own surface here. */
+  .info-icon .tip{background:#1B2140;color:#E6EAF7;border:1px solid var(--line);}
+
+  .confirm-backdrop{background:rgba(3,6,15,.72);}
+  .confirm-dialog{background:var(--raised);border-color:var(--line);box-shadow:0 24px 70px rgba(0,0,0,.6);}
+  .confirm-kicker{color:#FCA5A5;}
+  .note-action-delete:hover,.note-action-delete:focus-visible{color:#FCA5A5;}
+
+  .analysis-working{background:var(--raised);border-color:var(--line);}
+  .analysis-spinner{border-color:var(--line);border-top-color:var(--ledger);}
+  .match-score{color:#A8C0FF;}
+  .tabbar{background:#0B1020;border-top-color:var(--line);}
+  .tabbar button.active{color:#A8C0FF;}
+
+  /* The resume preview stands in for the printed page, so it stays on paper
+     no matter what the surrounding theme does. Rather than enumerate every
+     descendant, the light palette is re-declared on this scope: custom
+     properties inherit, so anything rendered inside resolves to paper colours
+     automatically -- including markup added later. */
+  .resume-preview{
+    --paper:#F2F3EF; --raised:#FFFFFF; --ink:#1C2321; --ink-muted:#5B5F58; --ink-faint:#8A8D84;
+    --line:#D8DAD2; --ledger:#1F6F5C; --ledger-soft:#E3EFEA; --ledger-ink:#0E3A30;
+    background:#FFFFFF; color:#1C2321; border-color:#D8DAD2;
+  }
+</style>
+</head>
+<body>
+
+<div class="shell">
+  <div class="sidebar">
+    <div class="wordmark">Career<span>Copilot</span></div>
+    <div class="tagline">EVIDENCE-BACKED · NOT GUESSED</div>
+    <nav class="nav" id="nav">
+      <button class="nav-item active" data-view="dashboard"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="9" rx="1"/><rect x="14" y="3" width="7" height="5" rx="1"/><rect x="14" y="12" width="7" height="9" rx="1"/><rect x="3" y="16" width="7" height="5" rx="1"/></svg>Dashboard</button>
+      <button class="nav-item" data-view="inventory"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 6h11M9 12h11M9 18h11M4 6h.01M4 12h.01M4 18h.01"/></svg>Skills inventory</button>
+      <button class="nav-item" data-view="jobhistory"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>Career background</button>
+      <button class="nav-item" data-view="tailor"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 3v4a1 1 0 0 0 1 1h4"/><path d="M17 21H7a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h7l5 5v11a2 2 0 0 1-2 2Z"/></svg>Tailor a resume</button>
+      <button class="nav-item" data-view="tracker"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 10h18M8 2v4M16 2v4"/></svg>Job tracker</button>
+      <button class="nav-item" data-view="profile"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 21v-1a8 8 0 0 1 16 0v1"/></svg>Profile</button>
+    </nav>
+    <div class="sidebar-foot">Fictional demo data · resets<br>whenever the page opens</div>
+  </div>
+
+  <div class="main">
+    <div class="prototype-notice" role="note"><strong>Demo prototype:</strong> Avery Morgan and all companies, applications, and résumé details shown here are fictional. Matching and résumé-upload results are simulated; files are not parsed, uploaded, or stored. Changes reset when the page is refreshed.</div>
+    <section class="view active" id="view-dashboard">
+      <div class="view-head">
+        <div><h1>Good to see you, Avery.</h1><div class="view-sub">Your fictional sales-career demo is ready to explore</div></div>
+      </div>
+      <div id="followup-section" style="display:none;">
+        <div class="section-label">Follow up — no response yet</div>
+        <div id="dash-followup"></div>
+      </div>
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 6h11M9 12h11M9 18h11M4 6h.01M4 12h.01M4 18h.01"/></svg></div>
+          <h3>Skills inventory</h3><p id="dash-skill-count">8 confirmed sales skills are loaded with evidence and ATS keywords.</p>
+          <button class="btn" data-goto="inventory">Review inventory</button>
+        </div>
+        <div class="card">
+          <div class="card-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 3v4a1 1 0 0 0 1 1h4"/><path d="M17 21H7a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h7l5 5v11a2 2 0 0 1-2 2Z"/></svg></div>
+          <h3>Tailor a resume</h3><p>Paste a job description, get a grounded draft and a match score.</p>
+          <button class="btn btn-primary" data-goto="tailor">Start tailoring</button>
+        </div>
+      </div>
+      <div class="section-label">Recent</div>
+      <div id="dash-recent"></div>
+    </section>
+
+    <section class="view" id="view-inventory">
+      <div class="view-head">
+        <div><h1>Skills inventory</h1><div class="view-sub">Every entry here is confirmed, not inferred — evidence attached.</div></div>
+        <div class="head-actions">
+          <label class="btn btn-sm" style="margin:0;">Upload resume<input type="file" id="resume-upload" accept=".txt,.md,.pdf,.docx" style="display:none;"></label>
+          <button class="btn btn-sm" id="download-skills-csv-btn">Download .csv</button>
+          <button class="btn btn-sm" id="download-skills-json-btn">Download .json</button>
+          <button class="btn btn-sm btn-primary" id="add-skill-btn">+ Add skill</button>
+        </div>
+      </div>
+      <div id="upload-status"></div>
+      <div class="foot-note" style="margin:0 0 14px;">Demo only: selecting a résumé does not run extraction. The file is not parsed, uploaded, or stored; the suggestions shown are prewritten examples.</div>
+      <div id="add-skill-panel"></div>
+      <div class="search-row"><input type="text" id="inv-search" placeholder="Search by skill, category, or tool…"></div>
+      <div id="inv-list"></div>
+    </section>
+
+    <section class="view" id="view-jobhistory">
+      <div class="view-head">
+        <div><h1>Career background</h1><div class="view-sub">Manage the roles, education, and credentials that feed every tailored résumé.</div></div>
+      </div>
+
+      <div class="profile-block" style="padding-top:0;">
+        <div class="profile-block-head">
+          <div><div class="section-label" style="margin-bottom:2px;">Job history</div><div class="controls-sub">Your real roles, in your own words — used in the Experience section.</div></div>
+          <div class="head-actions">
+            <label class="btn btn-sm" style="margin:0;">Upload résumé<input type="file" id="jobhistory-upload" accept=".txt,.md,.pdf,.docx" style="display:none;"></label>
+            <button class="btn btn-sm btn-primary" id="add-job-btn">+ Add role</button>
+          </div>
+        </div>
+        <div id="jobhistory-upload-status"></div>
+        <div class="foot-note" style="margin:0 0 14px;">Demo only: selecting a résumé does not run extraction. The file is not parsed, uploaded, or stored; the roles shown are prewritten examples.</div>
+        <div id="add-job-panel"></div>
+        <div id="job-list"></div>
+      </div>
+
+      <div class="profile-block">
+        <div class="profile-block-head">
+          <div><div class="section-label" style="margin-bottom:2px;">Education</div><div class="controls-sub">Academic background and completed degrees.</div></div>
+          <button class="btn btn-sm btn-primary" id="add-education-btn">+ Add education</button>
+        </div>
+        <div id="add-education-panel"></div>
+        <div id="education-list"></div>
+      </div>
+
+      <div class="profile-block">
+        <div class="profile-block-head">
+          <div><div class="section-label" style="margin-bottom:2px;">Certifications</div><div class="controls-sub">Professional credentials and completed sales training.</div></div>
+          <button class="btn btn-sm btn-primary" id="add-certification-btn">+ Add certification</button>
+        </div>
+        <div id="add-certification-panel"></div>
+        <div id="certification-list"></div>
+      </div>
+      <div class="foot-note">Fictional demo records are included so visitors can see how the complete career background flows into a tailored résumé.</div>
+    </section>
+
+    <section class="view" id="view-tailor">
+      <div class="view-head">
+        <div><h1>Tailor a resume</h1><div class="view-sub">Matches against your inventory only — nothing is invented.</div></div>
+      </div>
+      <div class="link-row">
+        <input type="url" id="jd-link" placeholder="Paste a job posting link…">
+        <button class="btn btn-sm" id="fetch-link-btn">Fetch</button>
+      </div>
+      <div class="fetch-status" id="fetch-status"></div>
+      <div class="or-divider">or paste the description directly</div>
+      <textarea id="jd-input" placeholder="Paste a job description…"></textarea>
+      <div style="margin-top:10px;display:flex;gap:10px;align-items:center;">
+        <button class="btn btn-primary" id="analyze-btn">Analyze &amp; draft</button>
+        <button class="btn btn-sm" id="sample-btn">Use sample posting</button>
+      </div>
+      <div class="analysis-status" id="analysis-status" aria-live="polite"></div>
+
+      <div class="panel" id="tailor-controls-panel" style="display:none;margin-top:18px;">
+        <div class="field-label" style="margin-bottom:2px;">Contact info to include</div>
+        <div class="controls-sub">Defaults come from your Profile — override per resume here.</div>
+        <div id="contact-include-list"></div>
+        <div class="field-label" style="margin:14px 0 2px;">Roles to include</div>
+        <div class="controls-sub">Most recent first by default — use the arrows to put the most relevant role on top instead.</div>
+        <div id="roles-include-list"></div>
+      </div>
+
+      <div class="tailor-grid" id="tailor-results" style="display:none;">
+        <div class="resume-preview" id="resume-preview"></div>
+        <div class="match-panel" id="match-panel"></div>
+      </div>
+      <div class="empty-hint" id="tailor-empty">Paste a link or a posting above and click Analyze to see a draft here.</div>
+    </section>
+
+    <section class="view" id="view-tracker">
+      <div class="view-head">
+        <div><h1>Job tracker</h1><div class="view-sub">Click any row to edit or delete it, or to log a note.</div></div>
+      </div>
+      <div class="add-row">
+        <div class="fields">
+          <input type="text" id="tr-role" placeholder="Role">
+          <input type="text" id="tr-company" placeholder="Company">
+          <select id="tr-type"><option value="" selected disabled>Type</option><option value="—">—</option><option>W2</option><option>Contract</option><option>Contract-to-hire</option><option>1099 / Independent contractor</option><option>C2C</option><option>Temporary</option><option>Part-time</option><option>Seasonal</option><option>Freelance / consulting</option><option>Internship</option></select>
+          <div id="tr-source-wrap"></div>
+          <input type="date" id="tr-date">
+        </div>
+        <button class="btn btn-sm" id="tr-add">+ Add entry</button>
+      </div>
+      <div class="filter-row">
+        <select id="filter-type"><option value="all">All types</option></select>
+        <select id="filter-source"><option value="all">All sources</option></select>
+        <select id="filter-status"><option value="all">All statuses</option></select>
+      </div>
+      <table class="tracker-table">
+        <thead><tr>
+          <th class="sortable" id="th-dateApplied" onclick="setSort('dateApplied')">Date Applied</th>
+          <th class="sortable" id="th-role" onclick="setSort('role')">Role &amp; company</th>
+          <th class="sortable" id="th-type" onclick="setSort('type')">Type</th>
+          <th class="sortable" id="th-source" onclick="setSort('source')">Source</th>
+          <th class="sortable" id="th-status" onclick="setSort('status')">Status</th>
+          <th class="sortable" id="th-score" onclick="setSort('score')">Match</th>
+          <th>Links</th>
+        </tr></thead>
+        <tbody id="tracker-body"></tbody>
+      </table>
+      <div class="foot-note">This preview resets on reload — entries aren't saved yet.</div>
+    </section>
+
+    <section class="view" id="view-profile">
+      <div class="view-head">
+        <div><h1>Profile</h1><div class="view-sub">These are defaults — you can still adjust what's included from the Tailor tab per resume.</div></div>
+      </div>
+      <div class="panel">
+        <div class="profile-row">
+          <span class="p-label">Photo</span>
+          <div style="display:flex;align-items:center;gap:10px;">
+            <img id="prof-photo-preview" src="" style="width:46px;height:46px;border-radius:50%;object-fit:cover;background:var(--paper);border:1px solid var(--line);display:none;">
+            <label class="btn btn-sm" style="margin:0;">Upload photo<input type="file" id="prof-photo" accept="image/*" style="display:none;"></label>
+            <button class="btn btn-sm btn-danger" id="remove-photo-btn" style="display:none;">Remove photo</button>
+          </div>
+        </div>
+        <div class="profile-row">
+          <span class="p-label">Name</span>
+          <input type="text" id="prof-name">
+        </div>
+        <div id="profile-fields"></div>
+
+        <div class="profile-block">
+          <div class="profile-block-head">
+            <span class="p-label" style="width:auto;">Social profiles</span>
+            <button class="btn btn-sm" id="add-social-btn">+ Add social</button>
+          </div>
+          <div id="socials-list"></div>
+        </div>
+
+        <div class="profile-block">
+          <div class="profile-block-head">
+            <span class="p-label" style="width:auto;">Websites / portfolio</span>
+            <button class="btn btn-sm" id="add-website-btn">+ Add website</button>
+          </div>
+          <div id="websites-list"></div>
+        </div>
+
+        <div class="profile-hint">Unchecked items are saved here but off by default. A note on the photo: most US applicant tracking systems parse headshots poorly, and many recruiters recommend leaving photos off resumes to avoid bias — it's saved to your profile, but never included in the .docx/.pdf export.</div>
+      </div>
+      <button class="btn btn-primary btn-sm" id="profile-save">Save profile</button>
+      <span id="profile-saved-msg" style="font-size:12px;color:var(--ledger-ink);margin-left:10px;"></span>
+    </section>
+  </div>
+</div>
+
+<div class="confirm-backdrop" id="confirm-modal" hidden>
+  <div class="confirm-dialog" role="alertdialog" aria-modal="true" aria-labelledby="confirm-title" aria-describedby="confirm-message">
+    <div class="confirm-kicker">Confirm deletion</div>
+    <h2 id="confirm-title">Delete this entry?</h2>
+    <p id="confirm-message"></p>
+    <div class="confirm-actions">
+      <button class="btn btn-sm" id="confirm-cancel">Cancel</button>
+      <button class="btn btn-sm btn-danger" id="confirm-delete">Delete</button>
+    </div>
+  </div>
+</div>
+
+<div class="tabbar" id="tabbar">
+  <button class="active" data-view="dashboard">⌂<br>Home</button>
+  <button data-view="inventory">≡<br>Skills</button>
+  <button data-view="jobhistory">▥<br>Career</button>
+  <button data-view="tailor">✎<br>Tailor</button>
+  <button data-view="tracker">▤<br>Tracker</button>
+  <button data-view="profile">◐<br>Profile</button>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://unpkg.com/docx@8.5.0/build/index.js"></script>
+<script>
+/* ---------------- Prototype configuration ---------------- */
+let CATEGORY_MAP = {
+  "AI & Emerging Technology": ["AI Applications","Agent & Automation Tools"],
+  "Business Analysis & Operations": ["Business Analysis","Process Analysis","Operations & Process"],
+  "Business Systems & Automation": ["CRM","Platforms & Automation"],
+  "Data & Analytics": ["Analysis & Reporting","Programming & Querying","Visualization & BI"],
+  "Project & Program Management": ["Planning & Delivery","Stakeholder Management"],
+  "Financial Services & Mortgage": ["Compliance & Regulatory","Client Services"],
+  "Sales & Client Relationships": ["Consultative Selling","Account Management"],
+  "Marketing & Digital Commerce": ["E-Commerce & Retail Operations","Content & Branding"],
+};
+const TRACKER_TYPES = ["—","W2","Contract","Contract-to-hire","1099 / Independent contractor","C2C","Temporary","Part-time","Seasonal","Freelance / consulting","Internship"];
+let SOURCES = ["—","LinkedIn","Referral","Recruiter","Direct","Indeed","Company website","Networking","Job fair","Other"];
+const RESUME_REPOSITORY = [
+  "Avery Morgan — General Sales Résumé.pdf",
+  "Avery Morgan — Enterprise Account Executive — BeaconFlow Analytics.pdf",
+  "Avery Morgan — Regional Sales Manager — SummitWorks Solutions.pdf",
+];
+
+let SKILLS = [
+  {id:"SK-101", cat:"Sales & Client Relationships", sub:"Consultative Selling", name:"Consultative Selling", prof:"Experienced",
+   evidence:"Led discovery conversations with operations and finance leaders, connected business needs to solution capabilities, and consistently advanced qualified opportunities.",
+   keywords:["consultative selling","solution selling","needs analysis","discovery"], claim:"Used consultative discovery to align solutions with customer needs and advance qualified opportunities.", note:""},
+  {id:"SK-102", cat:"Sales & Client Relationships", sub:"Consultative Selling", name:"B2B Sales", prof:"Experienced",
+   evidence:"Managed a full B2B sales cycle from prospecting and discovery through proposal, negotiation, close, and handoff.",
+   keywords:["b2b sales","full sales cycle","business development","quota attainment"], claim:"Managed full-cycle B2B opportunities from prospecting through close.", note:""},
+  {id:"SK-103", cat:"Sales & Client Relationships", sub:"Account Management", name:"Account Management", prof:"Experienced",
+   evidence:"Managed a portfolio of mid-market accounts, conducted quarterly business reviews, and identified renewal and expansion opportunities.",
+   keywords:["account management","customer retention","renewals","upselling"], claim:"Managed customer relationships, renewals, and account-growth opportunities.", note:""},
+  {id:"SK-104", cat:"Business Systems & Automation", sub:"CRM", name:"CRM Pipeline Management", prof:"Experienced",
+   evidence:"Maintained opportunity stages, activities, next steps, contacts, and forecast data in a CRM across an active regional pipeline.",
+   keywords:["crm","pipeline management","salesforce","opportunity management"], claim:"Maintained accurate CRM and pipeline data to support follow-up and forecasting.", note:"Fictional demo evidence; Salesforce represents a common sales workflow."},
+  {id:"SK-105", cat:"Data & Analytics", sub:"Analysis & Reporting", name:"Sales Forecasting", prof:"Working Knowledge",
+   evidence:"Reviewed stage, probability, deal value, and close-date data to prepare weekly forecasts and flag pipeline risk.",
+   keywords:["sales forecasting","pipeline analysis","revenue forecasting","sales reporting"], claim:"Used pipeline data to prepare forecasts and identify revenue risk.", note:""},
+  {id:"SK-106", cat:"Sales & Client Relationships", sub:"Consultative Selling", name:"Negotiation & Closing", prof:"Experienced",
+   evidence:"Negotiated commercial terms, addressed objections, coordinated approvals, and closed new and expansion business.",
+   keywords:["negotiation","closing","objection handling","commercial terms"], claim:"Negotiated terms, resolved objections, and closed new and expansion business.", note:""},
+  {id:"SK-107", cat:"Sales & Client Relationships", sub:"Account Management", name:"Customer Relationship Management", prof:"Experienced",
+   evidence:"Built multithreaded relationships with customer champions, end users, and decision-makers throughout the customer lifecycle.",
+   keywords:["relationship management","customer engagement","stakeholder management","customer lifecycle"], claim:"Built and maintained customer relationships across users, champions, and decision-makers.", note:""},
+  {id:"SK-108", cat:"Project & Program Management", sub:"Stakeholder Management", name:"Sales Presentations & Demos", prof:"Experienced",
+   evidence:"Delivered tailored presentations and product demonstrations for buying groups with different operational and financial priorities.",
+   keywords:["sales presentations","product demonstrations","executive presentations","storytelling"], claim:"Delivered tailored presentations and demonstrations to cross-functional buying groups.", note:""},
+];
+
+const RESUME_SUGGESTIONS = [
+  {id:"SK-109", cat:"Sales & Client Relationships", sub:"Consultative Selling", name:"Prospecting & Lead Qualification", prof:"Experienced",
+   evidence:"Built targeted prospect lists, conducted multichannel outreach, and qualified opportunities against business need, timing, and buying process.",
+   keywords:["prospecting","lead qualification","outbound sales","pipeline generation"], claim:"Prospected and qualified new B2B opportunities through targeted outreach.", note:"Simulated résumé-upload suggestion."},
+  {id:"SK-110", cat:"Sales & Client Relationships", sub:"Account Management", name:"Territory Planning", prof:"Working Knowledge",
+   evidence:"Prioritized accounts by fit, whitespace, renewal timing, and expansion potential to focus weekly sales activity.",
+   keywords:["territory planning","account segmentation","sales strategy"], claim:"Prioritized accounts and sales activity through structured territory planning.", note:"Simulated résumé-upload suggestion."},
+];
+
+const JOB_HISTORY_SUGGESTIONS = [
+  {title:"Sales Associate", company:"Harbor & Pine Retail", location:"Columbus, OH", startDate:"08/2016", endDate:"06/2018", current:false,
+   bullets:["Advised customers on product selection and consistently exceeded monthly attachment-rate goals.","Supported merchandising, inventory counts, and customer follow-up."]},
+];
+
+const SAMPLE_JD = `Senior Account Executive
+Meridian Growth Software — Remote
+
+About the role
+Meridian Growth Software is seeking a Senior Account Executive to help growing organizations improve their sales operations. This person will own a full B2B sales cycle, build trusted customer relationships, and partner with solution consultants and customer success to deliver a thoughtful buying experience. The ideal candidate combines consultative selling, disciplined pipeline management, and clear communication with a consistent record of quota attainment.
+
+Key responsibilities
+• Prospect into target accounts and lead discovery conversations with business and operations leaders.
+• Manage opportunities from qualification through product demonstrations, proposal, negotiation, and closing.
+• Maintain accurate CRM records, next steps, opportunity stages, and close dates.
+• Prepare weekly sales forecasting updates and identify pipeline risk early.
+• Develop account plans that support renewals, account management, and expansion opportunities.
+• Collaborate with marketing, solution consulting, implementation, and customer success teams.
+
+Required qualifications
+• 5+ years of B2B sales experience with responsibility for a full sales cycle.
+• Demonstrated success in consultative selling, negotiation, and quota attainment.
+• Hands-on experience with CRM and pipeline management.
+• Strong presentation, written communication, and stakeholder collaboration skills.
+• Ability to translate customer needs into clear business outcomes.
+
+Preferred qualifications
+• Experience selling SaaS or business software solutions.
+• Experience leading product demonstrations for cross-functional buying groups.
+• Familiarity with sales forecasting and account management practices.
+• Bachelor's degree in business, marketing, or a related field.
+• HubSpot Sales Software Certification or comparable sales training.`;
+let EDUCATION = [
+  {id:1, degree:"Bachelor of Business Administration in Marketing", school:"Midwest State University", year:"2018"}
+];
+let CERTIFICATIONS = [
+  {id:1, name:"HubSpot Sales Software Certification", issuer:"HubSpot Academy", year:"2024"},
+  {id:2, name:"Certified Professional Sales Person (CPSP)", issuer:"National Association of Sales Professionals", year:"2023"}
+];
+const SOCIAL_PLATFORMS = ["LinkedIn","GitHub","Twitter / X","Instagram","Behance","Medium","Other"];
+const MONTH_NAMES = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+
+function todayISO(){ return new Date().toISOString().slice(0,10); }
+function formatDate(iso){
+  if(!iso) return "—";
+  const d = new Date(iso+"T00:00:00");
+  if(isNaN(d)) return iso;
+  return d.toLocaleDateString('en-US', {month:'short', day:'numeric', year:'numeric'});
+}
+function formatNoteTimestamp(d){
+  const mm = String(d.getMonth()+1).padStart(2,"0");
+  const dd = String(d.getDate()).padStart(2,"0");
+  const yy = String(d.getFullYear()).slice(-2);
+  let h = d.getHours(); const ampm = h>=12 ? "PM":"AM"; h = h%12; if(h===0) h=12;
+  const min = String(d.getMinutes()).padStart(2,"0");
+  return `${mm}/${dd}/${yy} ${h}:${min}${ampm}`;
+}
+function isValidMonthYear(str){ return /^(0[1-9]|1[0-2])\/\d{4}$/.test((str||"").trim()); }
+function parseMonthYear(str){
+  const m = /^(0[1-9]|1[0-2])\/(\d{4})$/.exec((str||"").trim());
+  return m ? Number(m[2])*12 + Number(m[1]) : null;
+}
+function formatMonthYear(str){
+  const m = /^(0[1-9]|1[0-2])\/(\d{4})$/.exec((str||"").trim());
+  return m ? `${MONTH_NAMES[Number(m[1])-1]} ${m[2]}` : "";
+}
+function jobDateRange(j){
+  const start = formatMonthYear(j.startDate) || "start not set";
+  const end = j.current ? "Present" : (formatMonthYear(j.endDate) || "end not set");
+  return `${start} - ${end}`;
+}
+function daysSince(iso){
+  const d = new Date(iso+"T00:00:00");
+  const today = new Date(); today.setHours(0,0,0,0);
+  return Math.floor((today - d) / 86400000);
+}
+function insertJobSorted(list, job){
+  const key = j => j.current ? Infinity : (parseMonthYear(j.startDate) ?? -Infinity);
+  const idx = list.findIndex(existing => key(existing) < key(job));
+  if(idx === -1) list.push(job); else list.splice(idx, 0, job);
+  return list;
+}
+
+let trackerIdCounter = 3;
+let TRACKER = [
+  {id:1, dateApplied:"2026-08-20", role:"Enterprise Account Executive", company:"BeaconFlow Analytics", type:"W2", source:"LinkedIn", status:"Applied", score:88, resumeFile:"Avery Morgan — Enterprise Account Executive — BeaconFlow Analytics.pdf", postingLink:"", notes:[]},
+  {id:2, dateApplied:"2026-08-12", role:"Regional Sales Manager", company:"SummitWorks Solutions", type:"W2", source:"Recruiter", status:"Interview", score:82, resumeFile:"Avery Morgan — Regional Sales Manager — SummitWorks Solutions.pdf", postingLink:"", notes:[{date:"08/18/26 2:30 PM", text:"Completed first-round interview; panel interview requested."}]},
+  {id:3, dateApplied:"2026-07-29", role:"Senior Account Executive", company:"AxisPoint CRM", type:"W2", source:"Referral", status:"No response", score:79, resumeFile:"Avery Morgan — General Sales Résumé.pdf", postingLink:"", notes:[]},
+];
+
+let jobHistoryIdCounter = 3;
+let JOB_HISTORY = [
+  {id:1, title:"Senior Account Executive", company:"Northstar Revenue Systems", location:"Columbus, OH", startDate:"03/2023", endDate:"", current:true,
+   bullets:["Managed a $1.4M mid-market pipeline and finished 2025 at 118% of annual quota.","Led discovery, demonstrations, proposals, negotiation, and handoff for new and expansion business.","Improved forecast accuracy by maintaining clear opportunity stages, next steps, and close-date assumptions in the CRM."], source:"manual"},
+  {id:2, title:"Account Executive", company:"BrightPath Business Services", location:"Columbus, OH", startDate:"06/2020", endDate:"02/2023", current:false,
+   bullets:["Managed the full sales cycle for small and midsize business accounts across a multi-state territory.","Achieved 110% of quota in 2022 and expanded existing-account revenue through structured business reviews.","Partnered with implementation and customer-success teams to improve post-sale handoffs and retention."], source:"manual"},
+  {id:3, title:"Sales Development Representative", company:"Ridgeway Software Group", location:"Columbus, OH", startDate:"07/2018", endDate:"05/2020", current:false,
+   bullets:["Generated qualified opportunities through targeted email, phone, and LinkedIn outreach.","Averaged 55 qualified meetings per quarter and ranked in the top 15% of the SDR team in 2019.","Documented prospect needs, buying roles, and next steps in the CRM before account-executive handoff."], source:"manual"},
+];
+
+let PROFILE = {
+  name: "Avery Morgan",
+  photo: "",
+  fields: {
+    email:    {value:"avery.morgan@example.com", include:true,  label:"Email", placeholder:"you@email.com"},
+    phone:    {value:"(614) 555-0148", include:true, label:"Phone", placeholder:"(555) 555-5555"},
+    location: {value:"Columbus, OH", include:true, label:"Location", placeholder:"City, State"},
+  },
+  socials: [ {platform:"LinkedIn", value:"linkedin.com/in/avery-morgan-demo", include:true} ],
+  websites: [],
+};
+
+let editingSkillId = null;
+let addingSkill = false;
+let editingJobId = null;
+let addingJob = false;
+let educationIdCounter = 1;
+let certificationIdCounter = 2;
+let editingEducationId = null;
+let addingEducation = false;
+let editingCertificationId = null;
+let addingCertification = false;
+let lastMatched = [];
+let lastSummaryText = "";
+let lastPostingDetails = {role:"", company:""};
+let includedJobIds = new Set();
+let includedContactKeys = new Set();
+let expandedTrackerId = null;
+let editingNoteKey = null;
+let trackerFilter = {type:"all", source:"all", status:"all"};
+let trackerSort = {field:"dateApplied", dir:"desc"};
+
+/* ---------------- Nav ---------------- */
+function goto(view){
+  document.querySelectorAll(".view").forEach(v=>v.classList.remove("active"));
+  document.getElementById("view-"+view).classList.add("active");
+  document.querySelectorAll(".nav-item").forEach(b=>b.classList.toggle("active", b.dataset.view===view));
+  document.querySelectorAll(".tabbar button").forEach(b=>b.classList.toggle("active", b.dataset.view===view));
+}
+document.querySelectorAll("[data-view]").forEach(el=>el.addEventListener("click", ()=>goto(el.dataset.view)));
+document.querySelectorAll("[data-goto]").forEach(el=>el.addEventListener("click", ()=>goto(el.dataset.goto)));
+
+/* ---------------- Dashboard ---------------- */
+function renderRecent(){
+  document.getElementById("dash-recent").innerHTML = TRACKER.slice(0,3).map(r=>`
+    <div class="list-row"><div><div class="role">${r.role}</div><div class="company">${r.company}</div></div>
+    <span class="badge ${r.score>=80?'badge-good':'badge-warn'}">${r.score}%</span></div>`).join("") || `<div class="empty-hint">No applications added yet.</div>`;
+}
+function renderDashboardSkillCount(){
+  const count = SKILLS.length;
+  document.getElementById("dash-skill-count").textContent = `${count} confirmed ${count===1?"skill is":"skills are"} loaded with evidence and ATS keywords.`;
+}
+function jumpToTracker(id){ goto("tracker"); expandedTrackerId = id; renderTracker(); }
+function renderFollowUps(){
+  const FOLLOWUP_DAYS = 7;
+  const stale = TRACKER.filter(r=>r.status==="Applied" && daysSince(r.dateApplied)>=FOLLOWUP_DAYS)
+                        .sort((a,b)=>daysSince(b.dateApplied)-daysSince(a.dateApplied));
+  const section = document.getElementById("followup-section");
+  if(!stale.length){ section.style.display = "none"; return; }
+  section.style.display = "block";
+  document.getElementById("dash-followup").innerHTML = stale.map(r=>`
+    <div class="list-row" style="cursor:pointer;" onclick="jumpToTracker(${r.id})">
+      <div><div class="role">${r.role}</div><div class="company">${r.company}</div></div>
+      <span class="badge badge-warn">${daysSince(r.dateApplied)}d, no response</span>
+    </div>`).join("");
+}
+
+/* ---------------- Profile ---------------- */
+function getContactItems(){
+  const items = [];
+  ["email","phone","location"].forEach(k=>{
+    const f = PROFILE.fields[k];
+    if(f.value.trim()) items.push({key:"field:"+k, label:f.label, value:f.value.trim(), defaultInclude:f.include, raw:true});
+  });
+  PROFILE.socials.forEach((s,i)=>{ if(s.value.trim()) items.push({key:"social:"+i, label:s.platform, value:s.value.trim(), defaultInclude:s.include, raw:false}); });
+  PROFILE.websites.forEach((w,i)=>{ if(w.url.trim()) items.push({key:"website:"+i, label:w.label.trim()||"Website", value:w.url.trim(), defaultInclude:w.include, raw:false}); });
+  return items;
+}
+function renderProfile(){
+  document.getElementById("prof-name").value = PROFILE.name;
+  renderProfilePhoto();
+  document.getElementById("profile-fields").innerHTML = Object.entries(PROFILE.fields).map(([key,f])=>`
+    <div class="profile-row">
+      <span class="p-label"><input type="checkbox" id="pf-inc-${key}" ${f.include?"checked":""}> ${f.label}</span>
+      <input type="text" id="pf-val-${key}" value="${f.value}" placeholder="${f.placeholder}">
+    </div>`).join("");
+  renderSocials(); renderWebsites();
+}
+function renderProfilePhoto(){
+  const photo = document.getElementById("prof-photo-preview");
+  const removePhotoButton = document.getElementById("remove-photo-btn");
+  if(PROFILE.photo){ photo.src = PROFILE.photo; photo.style.display = "inline-block"; removePhotoButton.style.display = "inline-flex"; }
+  else { photo.removeAttribute("src"); photo.style.display = "none"; removePhotoButton.style.display = "none"; }
+}
+document.getElementById("prof-photo").addEventListener("change", (e)=>{
+  const file = e.target.files[0]; if(!file) return;
+  const reader = new FileReader();
+  reader.onload = ()=>{ PROFILE.photo = reader.result; renderProfilePhoto(); };
+  reader.readAsDataURL(file);
+});
+document.getElementById("remove-photo-btn").addEventListener("click", ()=>{
+  openDeleteConfirmation({
+    title:"Remove profile photo?",
+    message:"This removes the photo from the current profile preview.",
+    confirmLabel:"Remove photo",
+    onConfirm:()=>{ PROFILE.photo = ""; document.getElementById("prof-photo").value = ""; renderProfilePhoto(); }
+  });
+});
+function renderSocials(){
+  document.getElementById("socials-list").innerHTML = PROFILE.socials.map((s,i)=>`
+    <div class="dyn-row">
+      <input type="checkbox" id="soc-inc-${i}" ${s.include?"checked":""}>
+      <select class="field-input" id="soc-plat-${i}">${SOCIAL_PLATFORMS.map(p=>`<option ${s.platform===p?"selected":""}>${p}</option>`).join("")}</select>
+      <input type="text" class="field-input" id="soc-val-${i}" value="${s.value}" placeholder="Link or handle">
+      <button class="btn btn-sm btn-danger" onclick="removeSocial(${i})" aria-label="Remove ${s.platform} profile">Remove</button>
+    </div>`).join("") || `<div class="empty-hint" style="padding:6px 0;">No social profiles added.</div>`;
+}
+function syncSocialsFromDOM(){
+  PROFILE.socials = PROFILE.socials.map((s,i)=>({
+    platform: document.getElementById("soc-plat-"+i)?.value ?? s.platform,
+    value: document.getElementById("soc-val-"+i)?.value ?? s.value,
+    include: document.getElementById("soc-inc-"+i)?.checked ?? s.include,
+  }));
+}
+function removeSocial(i){
+  syncSocialsFromDOM();
+  const social = PROFILE.socials[i];
+  if(!social) return;
+  openDeleteConfirmation({
+    title:"Remove social profile?",
+    message:`Remove the ${social.platform} profile from this profile?`,
+    confirmLabel:"Remove profile",
+    onConfirm:()=>{ PROFILE.socials.splice(i,1); renderSocials(); refreshTailorIfActive(); }
+  });
+}
+document.getElementById("add-social-btn").addEventListener("click", ()=>{ syncSocialsFromDOM(); PROFILE.socials.push({platform:"LinkedIn", value:"", include:true}); renderSocials(); });
+
+function renderWebsites(){
+  document.getElementById("websites-list").innerHTML = PROFILE.websites.map((w,i)=>`
+    <div class="dyn-row">
+      <input type="checkbox" id="web-inc-${i}" ${w.include?"checked":""}>
+      <input type="text" class="field-input" id="web-label-${i}" value="${w.label}" placeholder="Label (e.g. Portfolio)" style="max-width:150px;">
+      <input type="text" class="field-input" id="web-url-${i}" value="${w.url}" placeholder="URL">
+      <button class="btn btn-sm btn-danger" onclick="removeWebsite(${i})" aria-label="Remove ${w.label||'website'}">Remove</button>
+    </div>`).join("") || `<div class="empty-hint" style="padding:6px 0;">No websites added.</div>`;
+}
+function syncWebsitesFromDOM(){
+  PROFILE.websites = PROFILE.websites.map((w,i)=>({
+    label: document.getElementById("web-label-"+i)?.value ?? w.label,
+    url: document.getElementById("web-url-"+i)?.value ?? w.url,
+    include: document.getElementById("web-inc-"+i)?.checked ?? w.include,
+  }));
+}
+function removeWebsite(i){
+  syncWebsitesFromDOM();
+  const website = PROFILE.websites[i];
+  if(!website) return;
+  openDeleteConfirmation({
+    title:"Remove website?",
+    message:`Remove ${website.label||"this website"} from this profile?`,
+    confirmLabel:"Remove website",
+    onConfirm:()=>{ PROFILE.websites.splice(i,1); renderWebsites(); refreshTailorIfActive(); }
+  });
+}
+document.getElementById("add-website-btn").addEventListener("click", ()=>{ syncWebsitesFromDOM(); PROFILE.websites.push({label:"", url:"", include:true}); renderWebsites(); });
+
+document.getElementById("profile-save").addEventListener("click", ()=>{
+  PROFILE.name = document.getElementById("prof-name").value.trim();
+  Object.keys(PROFILE.fields).forEach(key=>{
+    PROFILE.fields[key].value = document.getElementById("pf-val-"+key).value.trim();
+    PROFILE.fields[key].include = document.getElementById("pf-inc-"+key).checked;
+  });
+  syncSocialsFromDOM(); syncWebsitesFromDOM();
+  const msg = document.getElementById("profile-saved-msg");
+  msg.textContent = "Saved"; setTimeout(()=>msg.textContent="", 1600);
+  refreshTailorIfActive();
+});
+function buildContactLine(){
+  const items = getContactItems().filter(i=>includedContactKeys.has(i.key));
+  return items.map(i=> i.raw ? i.value : `${i.label}: ${i.value}`).join(" · ") || "Add your contact info in Profile";
+}
+function buildName(){ return PROFILE.name.trim() || "Your name"; }
+
+/* ---------------- Confirmation dialog ---------------- */
+let pendingDeleteAction = null;
+let confirmReturnFocus = null;
+function openDeleteConfirmation({title, message, confirmLabel="Delete", onConfirm}){
+  const modal = document.getElementById("confirm-modal");
+  confirmReturnFocus = document.activeElement;
+  pendingDeleteAction = onConfirm;
+  document.getElementById("confirm-title").textContent = title;
+  document.getElementById("confirm-message").textContent = message;
+  document.getElementById("confirm-delete").textContent = confirmLabel;
+  modal.hidden = false;
+  document.getElementById("confirm-cancel").focus();
+}
+function closeDeleteConfirmation(){
+  document.getElementById("confirm-modal").hidden = true;
+  pendingDeleteAction = null;
+  if(confirmReturnFocus?.isConnected) confirmReturnFocus.focus();
+  confirmReturnFocus = null;
+}
+document.getElementById("confirm-cancel").addEventListener("click", closeDeleteConfirmation);
+document.getElementById("confirm-delete").addEventListener("click", ()=>{
+  const action = pendingDeleteAction;
+  closeDeleteConfirmation();
+  action?.();
+});
+document.getElementById("confirm-modal").addEventListener("click", event=>{
+  if(event.target.id === "confirm-modal") closeDeleteConfirmation();
+});
+document.addEventListener("keydown", event=>{
+  if(event.key === "Escape" && !document.getElementById("confirm-modal").hidden) closeDeleteConfirmation();
+});
+
+/* ---------------- Shared helpers ---------------- */
+function flabel(text, help){
+  if(!help) return `<span class="field-label">${text}</span>`;
+  return `<span class="field-label">${text} <span class="info-icon" tabindex="0">i<span class="tip">${help}</span></span></span>`;
+}
+function categorySelect(currentValue){
+  const cats = Object.keys(CATEGORY_MAP);
+  return `<select class="field-input" id="f-cat" onchange="handleCategoryChange(this)">
+    ${cats.map(c=>`<option ${c===currentValue?"selected":""}>${c}</option>`).join("")}
+    <option value="__new__">+ Add new…</option></select>`;
+}
+function subcategorySelect(category, currentValue){
+  const subs = CATEGORY_MAP[category] || [];
+  return `<select class="field-input" id="f-sub" onchange="handleSubcategoryChange(this)">
+    ${subs.map(s=>`<option ${s===currentValue?"selected":""}>${s}</option>`).join("")}
+    <option value="__new__">+ Add new…</option></select>`;
+}
+function handleCategoryChange(sel){
+  if(sel.value === "__new__"){
+    const val = prompt("New category:");
+    if(val && val.trim()){
+      const name = val.trim();
+      if(!CATEGORY_MAP[name]) CATEGORY_MAP[name] = [];
+      const opt = document.createElement("option"); opt.textContent = name;
+      sel.insertBefore(opt, sel.lastElementChild); sel.value = name;
+    } else { sel.selectedIndex = 0; }
+  }
+  const subSel = document.getElementById("f-sub");
+  const subs = CATEGORY_MAP[sel.value] || [];
+  subSel.innerHTML = subs.map(s=>`<option>${s}</option>`).join("") + `<option value="__new__">+ Add new…</option>`;
+}
+function handleSubcategoryChange(sel){
+  if(sel.value !== "__new__") return;
+  const cat = document.getElementById("f-cat").value;
+  const val = prompt("New subcategory for " + cat + ":");
+  if(val && val.trim()){
+    if(!CATEGORY_MAP[cat]) CATEGORY_MAP[cat] = [];
+    if(!CATEGORY_MAP[cat].includes(val.trim())) CATEGORY_MAP[cat].push(val.trim());
+    const opt = document.createElement("option"); opt.textContent = val.trim();
+    sel.insertBefore(opt, sel.lastElementChild); sel.value = val.trim();
+  } else { sel.selectedIndex = 0; }
+}
+function sourceSelect(id, currentValue, showPlaceholder=false){
+  return `<select class="field-input" id="${id}" onfocus="this.dataset.previous=this.value" onchange="handleSourceChange(this)">
+    ${showPlaceholder ? `<option value="" ${currentValue===""?"selected":""} disabled>Source</option>` : ""}
+    ${SOURCES.map(s=>`<option ${s===currentValue?"selected":""}>${s}</option>`).join("")}
+    <option value="__new__">+ Add new…</option></select>`;
+}
+function handleSourceChange(sel){
+  if(sel.value !== "__new__") return;
+  const previous = sel.dataset.previous || "";
+  const editor = document.createElement("div");
+  editor.className = "source-new-row";
+  const input = document.createElement("input");
+  input.className = "field-input";
+  input.placeholder = "New source";
+  input.setAttribute("aria-label", "New application source");
+  const add = document.createElement("button");
+  add.type = "button"; add.className = "btn btn-sm btn-primary"; add.textContent = "Add";
+  const cancel = document.createElement("button");
+  cancel.type = "button"; cancel.className = "btn btn-sm"; cancel.textContent = "Cancel";
+  editor.append(input, add, cancel);
+  sel.insertAdjacentElement("afterend", editor);
+  sel.hidden = true;
+  const closeEditor = value=>{
+    editor.remove(); sel.hidden = false; sel.value = value; sel.dataset.previous = value;
+  };
+  const saveSource = ()=>{
+    const value = input.value.trim();
+    if(!value){ input.focus(); return; }
+    if(!SOURCES.includes(value)) SOURCES.push(value);
+    if(![...sel.options].some(option=>option.value===value)){
+      const option = document.createElement("option"); option.value = value; option.textContent = value;
+      sel.insertBefore(option, sel.lastElementChild);
+    }
+    closeEditor(value);
+  };
+  add.addEventListener("click", saveSource);
+  cancel.addEventListener("click", ()=>closeEditor(previous));
+  input.addEventListener("keydown", event=>{
+    if(event.key==="Enter"){ event.preventDefault(); saveSource(); }
+    if(event.key==="Escape"){ event.preventDefault(); closeEditor(previous); }
+  });
+  input.focus();
+}
+function refreshTailorIfActive(){
+  if(document.getElementById("tailor-results").style.display !== "grid") return;
+  const text = document.getElementById("jd-input").value.trim();
+  if(text) analyze(text);
+}
+
+/* ---------------- Inventory ---------------- */
+function profClass(p){ return p==="Experienced" ? "prof-Experienced" : "prof-Foundational"; }
+const PROF_HELP = "Foundational: exposure through coursework or limited practice. Working Knowledge: comfortable applying this with occasional guidance. Experienced: applied this independently and repeatedly in real work.";
+const EVIDENCE_HELP = "A real example of when you used this — this is what makes the skill resume-safe.";
+const KEYWORDS_HELP = "Alternate terms a recruiter or ATS might search for. This will eventually be AI-suggested — for now, add your own, separated by commas.";
+const NOTES_HELP = "Any honest caveat that keeps this skill from being overstated — e.g. 'still learning,' 'coursework only,' or 'don't imply team leadership.'";
+
+function skillEditForm(s){
+  const isNew = !s;
+  const cats = Object.keys(CATEGORY_MAP);
+  s = s || {id:"", cat:cats[0]||"", sub:(CATEGORY_MAP[cats[0]]||[])[0]||"", name:"", prof:"Working Knowledge", evidence:"", keywords:[], claim:"", note:""};
+  return `
+    <div class="panel">
+      <div class="field-grid">
+        <div>${flabel("Skill name")}<input class="field-input" id="f-name" value="${s.name}"></div>
+        <div>${flabel("Proficiency", PROF_HELP)}
+          <select class="field-input" id="f-prof">${["Foundational","Working Knowledge","Experienced"].map(p=>`<option ${s.prof===p?"selected":""}>${p}</option>`).join("")}</select></div>
+        <div>${flabel("Category")}${categorySelect(s.cat)}</div>
+        <div>${flabel("Subcategory")}${subcategorySelect(s.cat, s.sub)}</div>
+      </div>
+      <div class="field-grid full">
+        <div>${flabel("Evidence / use case", EVIDENCE_HELP)}<textarea class="field-input" id="f-evidence" rows="2">${s.evidence}</textarea></div>
+        <div>${flabel("ATS keywords", KEYWORDS_HELP)}<input class="field-input" id="f-keywords" value="${s.keywords.join(", ")}"></div>
+        <div>${flabel("Notes / limitations", NOTES_HELP)}<input class="field-input" id="f-note" value="${s.note}"></div>
+      </div>
+      <div class="form-actions">
+        ${isNew ? "" : `<button class="btn btn-sm btn-danger" id="f-delete" style="margin-right:auto;">Delete skill</button>`}
+        <button class="btn btn-sm" id="f-cancel">Cancel</button>
+        <button class="btn btn-sm btn-primary" id="f-save">${isNew?"Add skill":"Save changes"}</button>
+      </div>
+    </div>`;
+}
+function wireEditForm(existing, onSave, onCancel, onDelete){
+  document.getElementById("f-cancel").addEventListener("click", onCancel);
+  if(existing) document.getElementById("f-delete").addEventListener("click", onDelete);
+  document.getElementById("f-save").addEventListener("click", ()=>{
+    const updated = {
+      id: existing ? existing.id : "SK-NEW-"+Date.now().toString().slice(-4),
+      name: document.getElementById("f-name").value.trim(),
+      prof: document.getElementById("f-prof").value,
+      cat: document.getElementById("f-cat").value,
+      sub: document.getElementById("f-sub").value,
+      evidence: document.getElementById("f-evidence").value.trim(),
+      keywords: document.getElementById("f-keywords").value.split(",").map(k=>k.trim().toLowerCase()).filter(Boolean),
+      note: document.getElementById("f-note").value.trim(),
+      claim: existing ? existing.claim : document.getElementById("f-evidence").value.trim(),
+    };
+    if(!updated.name) return;
+    onSave(updated);
+  });
+}
+function renderInventory(){
+  renderDashboardSkillCount();
+  const filter = (document.getElementById("inv-search")?.value || "").toLowerCase();
+  const el = document.getElementById("inv-list");
+  const rows = SKILLS.filter(s => s.name.toLowerCase().includes(filter) || s.cat.toLowerCase().includes(filter) || s.keywords.some(k=>k.includes(filter)));
+  el.innerHTML = rows.map(s=>{
+    if(editingSkillId === s.id) return `<div id="edit-${s.id}"></div>`;
+    return `
+    <div class="skill-card" data-id="${s.id}">
+      <div class="skill-top">
+        <div><div class="skill-id mono">${s.id}</div><div class="skill-name">${s.name}</div><div class="skill-cat">${s.cat} · ${s.sub}</div></div>
+        <span class="prof-badge ${profClass(s.prof)}">${s.prof}</span>
+      </div>
+      <div class="skill-evidence">${s.evidence}</div>
+      <div class="chips">${s.keywords.map(k=>`<span class="chip">${k}</span>`).join("")}</div>
+      ${s.note ? `<div class="skill-note">${s.note}</div>` : ""}
+      <div class="edit-hint">Click to edit or delete</div>
+    </div>`;
+  }).join("") || `<div class="empty-hint">${filter ? `No skills match "${filter}".` : "No skills yet — add one manually or upload a résumé."}</div>`;
+  rows.forEach(s=>{
+    if(editingSkillId === s.id){
+      document.getElementById("edit-"+s.id).outerHTML = skillEditForm(s);
+      wireEditForm(s, (updated)=>{ SKILLS = SKILLS.map(x=>x.id===s.id?updated:x); editingSkillId=null; renderInventory(); refreshTailorIfActive(); },
+                      ()=>{ editingSkillId=null; renderInventory(); },
+                      ()=>{
+                        openDeleteConfirmation({
+                          title:"Delete this skill?",
+                          message:`Delete ${s.name} from the skills inventory? This also removes it from future résumé matching.`,
+                          confirmLabel:"Delete skill",
+                          onConfirm:()=>{
+                            SKILLS = SKILLS.filter(x=>x.id!==s.id);
+                            editingSkillId = null;
+                            renderInventory();
+                            refreshTailorIfActive();
+                          }
+                        });
+                      });
+    }
+  });
+  if(editingSkillId===null){
+    document.querySelectorAll(".skill-card").forEach(card=>card.addEventListener("click", ()=>{ editingSkillId = card.dataset.id; renderInventory(); }));
+  }
+}
+document.getElementById("inv-search").addEventListener("input", renderInventory);
+document.getElementById("add-skill-btn").addEventListener("click", ()=>{
+  addingSkill = !addingSkill;
+  const panel = document.getElementById("add-skill-panel");
+  if(addingSkill){
+    panel.innerHTML = skillEditForm(null);
+    wireEditForm(null, (newSkill)=>{ SKILLS = [newSkill, ...SKILLS]; addingSkill=false; panel.innerHTML=""; renderInventory(); refreshTailorIfActive(); },
+                        ()=>{ addingSkill=false; panel.innerHTML=""; });
+  } else { panel.innerHTML = ""; }
+});
+document.getElementById("resume-upload").addEventListener("change", (e)=>{
+  const file = e.target.files[0]; if(!file) return;
+  const statusEl = document.getElementById("upload-status");
+  statusEl.innerHTML = `<div class="panel">Preparing simulated suggestions for ${file.name}…</div>`;
+  setTimeout(()=>{
+    const existingNames = new Set(SKILLS.map(s=>s.name));
+    const fresh = RESUME_SUGGESTIONS.filter(s=>!existingNames.has(s.name));
+    if(!fresh.length){ statusEl.innerHTML = `<div class="panel">No new skills found beyond what's already in your inventory.</div>`; return; }
+    statusEl.innerHTML = `<div class="panel">
+      <div class="field-label" style="margin-bottom:8px;">Simulated skill suggestions for ${file.name} — review before adding</div>
+      ${fresh.map((s,i)=>`<div class="suggest-row"><input type="checkbox" id="sugg-${i}" checked>
+        <div><div class="suggest-name">${s.name}</div><div class="suggest-evidence">${s.evidence}</div></div></div>`).join("")}
+      <div class="form-actions" style="margin-top:10px;">
+        <button class="btn btn-sm" id="sugg-cancel">Dismiss</button>
+        <button class="btn btn-sm btn-primary" id="sugg-add">Add selected</button>
+      </div></div>`;
+    document.getElementById("sugg-cancel").addEventListener("click", ()=>{ statusEl.innerHTML=""; document.getElementById("resume-upload").value=""; });
+    document.getElementById("sugg-add").addEventListener("click", ()=>{
+      fresh.forEach((s,i)=>{ if(document.getElementById("sugg-"+i).checked) SKILLS = [s, ...SKILLS]; });
+      statusEl.innerHTML = ""; document.getElementById("resume-upload").value=""; renderInventory(); refreshTailorIfActive();
+    });
+  }, 900);
+});
+
+/* ---------------- Job history ---------------- */
+function jobEditForm(j){
+  const isNew = !j;
+  j = j || {id:"", title:"", company:"", location:"", startDate:"", endDate:"", current:false, bullets:[]};
+  return `
+    <div class="panel">
+      <div class="field-grid">
+        <div>${flabel("Title")}<input class="field-input" id="j-title" value="${j.title}"></div>
+        <div>${flabel("Company")}<input class="field-input" id="j-company" value="${j.company}"></div>
+        <div>${flabel("Location")}<input class="field-input" id="j-location" value="${j.location}"></div>
+        <div></div>
+        <div>${flabel("Start date")}<input type="text" class="field-input" id="j-start" value="${j.startDate}" placeholder="MM/YYYY" maxlength="7"><div class="field-error" id="j-start-err"></div></div>
+        <div>${flabel("End date")}<input type="text" class="field-input" id="j-end" value="${j.endDate}" placeholder="MM/YYYY" maxlength="7" ${j.current?"disabled":""}><div class="field-error" id="j-end-err"></div></div>
+      </div>
+      <label class="checkin-current"><input type="checkbox" id="j-current" ${j.current?"checked":""} onchange="document.getElementById('j-end').disabled=this.checked;"> I currently work here</label>
+      <div class="field-grid full" style="margin-top:10px;">
+        <div>${flabel("Bullets")}<textarea class="field-input" id="j-bullets" rows="3">${j.bullets.join("\\n")}</textarea></div>
+      </div>
+      <div class="form-actions">
+        ${isNew ? "" : `<button class="btn btn-sm btn-danger" id="j-delete" style="margin-right:auto;">Delete role</button>`}
+        <button class="btn btn-sm" id="j-cancel">Cancel</button>
+        <button class="btn btn-sm btn-primary" id="j-save">${isNew?"Add role":"Save changes"}</button>
+      </div>
+    </div>`;
+}
+function wireJobForm(existing, onSave, onCancel, onDelete){
+  document.getElementById("j-cancel").addEventListener("click", onCancel);
+  if(existing) document.getElementById("j-delete").addEventListener("click", onDelete);
+  document.getElementById("j-save").addEventListener("click", ()=>{
+    const startVal = document.getElementById("j-start").value.trim();
+    const endVal = document.getElementById("j-end").value.trim();
+    const current = document.getElementById("j-current").checked;
+    document.getElementById("j-start-err").textContent = "";
+    document.getElementById("j-end-err").textContent = "";
+    let ok = true;
+    if(startVal && !isValidMonthYear(startVal)){ document.getElementById("j-start-err").textContent = "Use MM/YYYY, e.g. 03/2024"; ok = false; }
+    if(!current && endVal && !isValidMonthYear(endVal)){ document.getElementById("j-end-err").textContent = "Use MM/YYYY, e.g. 03/2024"; ok = false; }
+    if(!ok) return;
+    const updated = {
+      id: existing ? existing.id : ++jobHistoryIdCounter,
+      title: document.getElementById("j-title").value.trim(),
+      company: document.getElementById("j-company").value.trim(),
+      location: document.getElementById("j-location").value.trim(),
+      startDate: startVal, endDate: current ? "" : endVal, current,
+      bullets: document.getElementById("j-bullets").value.split("\n").map(b=>b.trim()).filter(Boolean),
+      source: existing ? existing.source : "manual",
+    };
+    if(!updated.title || !updated.company) return;
+    onSave(updated);
+  });
+}
+function renderJobHistory(){
+  const el = document.getElementById("job-list");
+  el.innerHTML = JOB_HISTORY.map(j=>{
+    if(editingJobId === j.id) return `<div id="jedit-${j.id}"></div>`;
+    return `
+    <div class="skill-card" data-id="${j.id}">
+      <div class="skill-top">
+        <div><div class="skill-name">${j.title}</div><div class="skill-cat">${j.company}${j.location?" · "+j.location:""}</div></div>
+        <span class="badge badge-flat">${jobDateRange(j)}</span>
+      </div>
+      <ul style="margin:8px 0 0;padding-left:18px;font-size:12.5px;color:var(--ink-muted);">${j.bullets.map(b=>`<li>${b}</li>`).join("")}</ul>
+      <div class="edit-hint">Click to edit or delete</div>
+    </div>`;
+  }).join("") || `<div class="empty-hint">No roles yet — add one manually or upload a resume.</div>`;
+  JOB_HISTORY.forEach(j=>{
+    if(editingJobId === j.id){
+      document.getElementById("jedit-"+j.id).outerHTML = jobEditForm(j);
+      wireJobForm(j, (updated)=>{ JOB_HISTORY = JOB_HISTORY.map(x=>x.id===j.id?updated:x); editingJobId=null; renderJobHistory(); refreshTailorIfActive(); },
+                     ()=>{ editingJobId=null; renderJobHistory(); },
+                     ()=>{
+                       openDeleteConfirmation({
+                         title:"Delete this role?",
+                         message:`Delete ${j.title} at ${j.company} from job history? This also removes it from future résumé drafts.`,
+                         confirmLabel:"Delete role",
+                         onConfirm:()=>{
+                           JOB_HISTORY = JOB_HISTORY.filter(x=>x.id!==j.id);
+                           includedJobIds.delete(j.id);
+                           editingJobId = null;
+                           renderJobHistory();
+                           refreshTailorIfActive();
+                         }
+                       });
+                     });
+    }
+  });
+  if(editingJobId===null){
+    document.querySelectorAll("#job-list .skill-card").forEach(card=>card.addEventListener("click", ()=>{ editingJobId = Number(card.dataset.id); renderJobHistory(); }));
+  }
+}
+document.getElementById("add-job-btn").addEventListener("click", ()=>{
+  addingJob = !addingJob;
+  const panel = document.getElementById("add-job-panel");
+  if(addingJob){
+    panel.innerHTML = jobEditForm(null);
+    wireJobForm(null, (newJob)=>{ insertJobSorted(JOB_HISTORY, newJob); addingJob=false; panel.innerHTML=""; renderJobHistory(); refreshTailorIfActive(); },
+                      ()=>{ addingJob=false; panel.innerHTML=""; });
+  } else { panel.innerHTML = ""; }
+});
+document.getElementById("jobhistory-upload").addEventListener("change", (e)=>{
+  const file = e.target.files[0]; if(!file) return;
+  const statusEl = document.getElementById("jobhistory-upload-status");
+  statusEl.innerHTML = `<div class="panel">Preparing simulated role suggestions for ${file.name}…</div>`;
+  setTimeout(()=>{
+    const existingKeys = new Set(JOB_HISTORY.map(j=>j.title+"|"+j.company));
+    const fresh = JOB_HISTORY_SUGGESTIONS.filter(j=>!existingKeys.has(j.title+"|"+j.company));
+    if(!fresh.length){ statusEl.innerHTML = `<div class="panel">No new roles found beyond what's already in your history.</div>`; return; }
+    statusEl.innerHTML = `<div class="panel">
+      <div class="field-label" style="margin-bottom:8px;">Simulated role suggestions for ${file.name} — review before adding</div>
+      ${fresh.map((j,i)=>`<div class="suggest-row"><input type="checkbox" id="jsugg-${i}" checked>
+        <div><div class="suggest-name">${j.title} — ${j.company}</div><div class="suggest-evidence">${jobDateRange(j)}</div></div></div>`).join("")}
+      <div class="form-actions" style="margin-top:10px;">
+        <button class="btn btn-sm" id="jsugg-cancel">Dismiss</button>
+        <button class="btn btn-sm btn-primary" id="jsugg-add">Add selected</button>
+      </div></div>`;
+    document.getElementById("jsugg-cancel").addEventListener("click", ()=>{ statusEl.innerHTML=""; document.getElementById("jobhistory-upload").value=""; });
+    document.getElementById("jsugg-add").addEventListener("click", ()=>{
+      fresh.forEach((j,i)=>{ if(document.getElementById("jsugg-"+i).checked) insertJobSorted(JOB_HISTORY, {...j, id:++jobHistoryIdCounter, source:"resume"}); });
+      statusEl.innerHTML = ""; document.getElementById("jobhistory-upload").value=""; renderJobHistory(); refreshTailorIfActive();
+    });
+  }, 900);
+});
+
+/* ---------------- Education & certifications ---------------- */
+function educationForm(record){
+  const isNew = !record;
+  const item = record || {degree:"", school:"", year:""};
+  return `<div class="panel">
+    <div class="field-grid">
+      <div>${flabel("Degree / program")}<input class="field-input" id="edu-degree" value="${item.degree}"></div>
+      <div>${flabel("School")}<input class="field-input" id="edu-school" value="${item.school}"></div>
+      <div>${flabel("Completion year")}<input class="field-input" id="edu-year" value="${item.year}" placeholder="YYYY" maxlength="4"><div class="field-error" id="edu-year-err"></div></div>
+    </div>
+    <div class="form-actions">
+      ${isNew ? "" : `<button class="btn btn-sm btn-danger" id="edu-delete" style="margin-right:auto;">Delete education</button>`}
+      <button class="btn btn-sm" id="edu-cancel">Cancel</button>
+      <button class="btn btn-sm btn-primary" id="edu-save">${isNew?"Add education":"Save changes"}</button>
+    </div>
+  </div>`;
+}
+function wireEducationForm(existing, onSave, onCancel, onDelete){
+  document.getElementById("edu-cancel").addEventListener("click", onCancel);
+  if(existing) document.getElementById("edu-delete").addEventListener("click", onDelete);
+  document.getElementById("edu-save").addEventListener("click", ()=>{
+    const degree = document.getElementById("edu-degree").value.trim();
+    const school = document.getElementById("edu-school").value.trim();
+    const year = document.getElementById("edu-year").value.trim();
+    document.getElementById("edu-year-err").textContent = "";
+    if(year && !/^\d{4}$/.test(year)){ document.getElementById("edu-year-err").textContent = "Use a four-digit year, e.g. 2018"; return; }
+    if(!degree || !school) return;
+    onSave({id:existing?.id || ++educationIdCounter, degree, school, year});
+  });
+}
+function renderEducation(){
+  const list = document.getElementById("education-list");
+  list.innerHTML = EDUCATION.map(item=> editingEducationId===item.id ? `<div id="edu-edit-${item.id}"></div>` : `
+    <div class="skill-card" data-id="${item.id}">
+      <div class="skill-top">
+        <div><div class="skill-name">${item.degree}</div><div class="skill-cat">${item.school}</div></div>
+        <span class="badge badge-flat">${item.year||"Year not listed"}</span>
+      </div>
+      <div class="edit-hint">Click to edit or delete</div>
+    </div>`).join("") || `<div class="empty-hint">No education added yet.</div>`;
+  const current = EDUCATION.find(item=>item.id===editingEducationId);
+  if(current){
+    document.getElementById("edu-edit-"+current.id).outerHTML = educationForm(current);
+    wireEducationForm(current,
+      updated=>{ EDUCATION = EDUCATION.map(item=>item.id===current.id?updated:item); editingEducationId=null; renderEducation(); refreshTailorIfActive(); },
+      ()=>{ editingEducationId=null; renderEducation(); },
+      ()=>requestDeleteEducation(current.id));
+  }
+  if(editingEducationId===null){
+    document.querySelectorAll("#education-list .skill-card").forEach(card=>card.addEventListener("click", ()=>editEducation(Number(card.dataset.id))));
+  }
+}
+function editEducation(id){ addingEducation=false; document.getElementById("add-education-panel").innerHTML=""; editingEducationId=id; renderEducation(); }
+function requestDeleteEducation(id){
+  const item = EDUCATION.find(record=>record.id===id); if(!item) return;
+  openDeleteConfirmation({
+    title:"Delete this education entry?",
+    message:`Delete ${item.degree} from ${item.school}? This also removes it from future résumé drafts.`,
+    confirmLabel:"Delete education",
+    onConfirm:()=>{ EDUCATION = EDUCATION.filter(record=>record.id!==id); editingEducationId=null; renderEducation(); refreshTailorIfActive(); }
+  });
+}
+document.getElementById("add-education-btn").addEventListener("click", ()=>{
+  addingEducation=!addingEducation; editingEducationId=null; renderEducation();
+  const panel=document.getElementById("add-education-panel");
+  if(!addingEducation){ panel.innerHTML=""; return; }
+  panel.innerHTML=educationForm(null);
+  wireEducationForm(null,
+    item=>{ EDUCATION=[item,...EDUCATION]; addingEducation=false; panel.innerHTML=""; renderEducation(); refreshTailorIfActive(); },
+    ()=>{ addingEducation=false; panel.innerHTML=""; });
+});
+
+function certificationForm(record){
+  const isNew = !record;
+  const item = record || {name:"", issuer:"", year:""};
+  return `<div class="panel">
+    <div class="field-grid">
+      <div>${flabel("Certification / training")}<input class="field-input" id="cert-name" value="${item.name}"></div>
+      <div>${flabel("Issuing organization")}<input class="field-input" id="cert-issuer" value="${item.issuer}"></div>
+      <div>${flabel("Completion year")}<input class="field-input" id="cert-year" value="${item.year}" placeholder="YYYY" maxlength="4"><div class="field-error" id="cert-year-err"></div></div>
+    </div>
+    <div class="form-actions">
+      ${isNew ? "" : `<button class="btn btn-sm btn-danger" id="cert-delete" style="margin-right:auto;">Delete certification</button>`}
+      <button class="btn btn-sm" id="cert-cancel">Cancel</button>
+      <button class="btn btn-sm btn-primary" id="cert-save">${isNew?"Add certification":"Save changes"}</button>
+    </div>
+  </div>`;
+}
+function wireCertificationForm(existing, onSave, onCancel, onDelete){
+  document.getElementById("cert-cancel").addEventListener("click", onCancel);
+  if(existing) document.getElementById("cert-delete").addEventListener("click", onDelete);
+  document.getElementById("cert-save").addEventListener("click", ()=>{
+    const name = document.getElementById("cert-name").value.trim();
+    const issuer = document.getElementById("cert-issuer").value.trim();
+    const year = document.getElementById("cert-year").value.trim();
+    document.getElementById("cert-year-err").textContent = "";
+    if(year && !/^\d{4}$/.test(year)){ document.getElementById("cert-year-err").textContent = "Use a four-digit year, e.g. 2024"; return; }
+    if(!name || !issuer) return;
+    onSave({id:existing?.id || ++certificationIdCounter, name, issuer, year});
+  });
+}
+function renderCertifications(){
+  const list = document.getElementById("certification-list");
+  list.innerHTML = CERTIFICATIONS.map(item=> editingCertificationId===item.id ? `<div id="cert-edit-${item.id}"></div>` : `
+    <div class="skill-card" data-id="${item.id}">
+      <div class="skill-top">
+        <div><div class="skill-name">${item.name}</div><div class="skill-cat">${item.issuer}</div></div>
+        <span class="badge badge-flat">${item.year||"Year not listed"}</span>
+      </div>
+      <div class="edit-hint">Click to edit or delete</div>
+    </div>`).join("") || `<div class="empty-hint">No certifications added yet.</div>`;
+  const current = CERTIFICATIONS.find(item=>item.id===editingCertificationId);
+  if(current){
+    document.getElementById("cert-edit-"+current.id).outerHTML = certificationForm(current);
+    wireCertificationForm(current,
+      updated=>{ CERTIFICATIONS = CERTIFICATIONS.map(item=>item.id===current.id?updated:item); editingCertificationId=null; renderCertifications(); refreshTailorIfActive(); },
+      ()=>{ editingCertificationId=null; renderCertifications(); },
+      ()=>requestDeleteCertification(current.id));
+  }
+  if(editingCertificationId===null){
+    document.querySelectorAll("#certification-list .skill-card").forEach(card=>card.addEventListener("click", ()=>editCertification(Number(card.dataset.id))));
+  }
+}
+function editCertification(id){ addingCertification=false; document.getElementById("add-certification-panel").innerHTML=""; editingCertificationId=id; renderCertifications(); }
+function requestDeleteCertification(id){
+  const item = CERTIFICATIONS.find(record=>record.id===id); if(!item) return;
+  openDeleteConfirmation({
+    title:"Delete this certification?",
+    message:`Delete ${item.name} from ${item.issuer}? This also removes it from future résumé drafts.`,
+    confirmLabel:"Delete certification",
+    onConfirm:()=>{ CERTIFICATIONS = CERTIFICATIONS.filter(record=>record.id!==id); editingCertificationId=null; renderCertifications(); refreshTailorIfActive(); }
+  });
+}
+document.getElementById("add-certification-btn").addEventListener("click", ()=>{
+  addingCertification=!addingCertification; editingCertificationId=null; renderCertifications();
+  const panel=document.getElementById("add-certification-panel");
+  if(!addingCertification){ panel.innerHTML=""; return; }
+  panel.innerHTML=certificationForm(null);
+  wireCertificationForm(null,
+    item=>{ CERTIFICATIONS=[item,...CERTIFICATIONS]; addingCertification=false; panel.innerHTML=""; renderCertifications(); refreshTailorIfActive(); },
+    ()=>{ addingCertification=false; panel.innerHTML=""; });
+});
+
+/* ---------------- Tailor ---------------- */
+document.getElementById("fetch-link-btn").addEventListener("click", async ()=>{
+  const url = document.getElementById("jd-link").value.trim();
+  const statusEl = document.getElementById("fetch-status");
+  if(!url){ statusEl.textContent = "Paste a link first."; return; }
+  statusEl.textContent = "Fetching…";
+  try{
+    const res = await fetch(url);
+    if(!res.ok) throw new Error("bad status");
+    const html = await res.text();
+    const text = new DOMParser().parseFromString(html, "text/html").body.innerText.trim();
+    if(!text) throw new Error("empty");
+    document.getElementById("jd-input").value = text.slice(0, 6000);
+    statusEl.textContent = "Pulled the posting text below — check it over, then click Analyze.";
+  }catch(err){
+    statusEl.textContent = "Couldn't pull this posting automatically (most job sites block that from a browser). Paste the text into the box below instead.";
+    document.getElementById("jd-input").focus();
+  }
+});
+let jdDebounceTimer;
+document.getElementById("jd-input").addEventListener("input", ()=>{
+  clearTimeout(jdDebounceTimer);
+  jdDebounceTimer = setTimeout(refreshTailorIfActive, 600);
+});
+function extractPostingDetails(text){
+  const lines = text.split(/\r?\n/).map(line=>line.replace(/^[•*-]\s*/, "").replace(/\s+/g, " ").trim()).filter(Boolean);
+  const labeledValue = (label)=>{
+    const match = lines.find(line=>label.test(line));
+    return match ? match.replace(label, "").trim() : "";
+  };
+  const sectionHeading = /^(about|about the role|overview|job description|position summary|summary|key responsibilities|responsibilities|what you'll do|required qualifications|preferred qualifications|qualifications|requirements)$/i;
+  const locationOnly = /^(remote|hybrid|on[- ]site|[A-Za-z .'-]+,\s*[A-Z]{2})$/i;
+  const cleanCompany = value=>value.split(/\s+[—–|•]\s+/)[0].replace(/^(company|organization|employer)\s*:\s*/i, "").trim();
+
+  let role = labeledValue(/^(job title|position title|role|position)\s*:\s*/i);
+  let company = labeledValue(/^(company|organization|employer)\s*:\s*/i);
+  const candidates = lines.filter(line=>!sectionHeading.test(line) && !line.endsWith(":"));
+
+  if(!role && candidates.length){
+    const atMatch = candidates[0].match(/^(.+?)\s+(?:at|@)\s+(.+)$/i);
+    const dashParts = candidates[0].split(/\s+[—–]\s+/);
+    if(atMatch){
+      role = atMatch[1].trim();
+      if(!company) company = cleanCompany(atMatch[2]);
+    }else if(dashParts.length === 2 && !locationOnly.test(dashParts[1])){
+      role = dashParts[0].trim();
+      if(!company) company = cleanCompany(dashParts[1]);
+    }else{
+      role = candidates[0];
+    }
+  }
+
+  if(!company){
+    const roleIndex = lines.findIndex(line=>line === role || line.toLowerCase().endsWith(role.toLowerCase()));
+    const following = lines.slice(Math.max(0, roleIndex + 1)).find(line=>!sectionHeading.test(line) && !locationOnly.test(line) && !/^(job title|position title|role|position)\s*:/i.test(line) && line.length <= 120);
+    if(following) company = cleanCompany(following);
+  }
+
+  return {role:role.slice(0,120), company:company.slice(0,120)};
+}
+function analyze(text){
+  const wasActive = document.getElementById("tailor-results").style.display === "grid";
+  const lower = text.toLowerCase();
+  const matched = SKILLS.filter(s=>s.keywords.some(k=>lower.includes(k)));
+  const unmatched = SKILLS.filter(s=>!matched.includes(s));
+  const score = SKILLS.length ? Math.round((matched.length / SKILLS.length) * 100) : 0;
+  lastMatched = matched;
+  lastSummaryText = matched.length ? "Professional background across " + [...new Set(matched.map(m=>m.cat))].join(", ") + "." : "No matching background found in the current inventory for this posting.";
+  lastPostingDetails = extractPostingDetails(text);
+
+  if(!wasActive){
+    includedJobIds = new Set(JOB_HISTORY.map(j=>j.id));
+    includedContactKeys = new Set(getContactItems().filter(i=>i.defaultInclude).map(i=>i.key));
+  }
+
+  document.getElementById("tailor-empty").style.display = "none";
+  document.getElementById("tailor-results").style.display = "grid";
+  document.getElementById("tailor-controls-panel").style.display = "block";
+  renderResumeOutput(); renderTailorControls();
+
+  document.getElementById("match-panel").innerHTML = `
+    <div class="match-label">Match score (current inventory)</div><div class="match-score">${score}%</div>
+    <div class="match-list">${matched.map(m=>`<div class="match-list-item"><span style="color:var(--ledger);">✓</span> ${m.name}</div>`).join("")}</div>
+    ${unmatched.length ? `<div style="border-top:1px solid var(--line);padding-top:10px;">
+      <div style="font-size:10.5px;color:var(--ink-faint);margin-bottom:6px;text-transform:uppercase;">Not matched to this posting</div>
+      ${unmatched.map(m=>`<div class="match-list-item"><span style="color:var(--ink-faint);">–</span> <span style="color:var(--ink-muted);">${m.name}</span></div>`).join("")}
+    </div>` : ""}
+    <div class="dl-row">
+      <button class="btn btn-sm btn-block" id="copy-btn">Copy resume text</button>
+      <button class="btn btn-sm btn-block" id="docx-btn">Download .docx</button>
+      <button class="btn btn-sm btn-block" id="pdf-btn">Download .pdf</button>
+    </div>
+    <div class="add-tracker-box">
+      <span class="field-label">Add to tracker</span>
+      <input class="field-input" id="at-role" placeholder="Role">
+      <input class="field-input" id="at-company" placeholder="Company">
+      <div class="controls-sub">Detected from the job description — edit if needed.</div>
+      <button class="btn btn-sm btn-block" id="at-add">Add to tracker</button>
+    </div>`;
+  document.getElementById("at-role").value = lastPostingDetails.role;
+  document.getElementById("at-company").value = lastPostingDetails.company;
+  document.getElementById("copy-btn").addEventListener("click", ()=>{
+    navigator.clipboard?.writeText(document.getElementById("resume-preview").innerText);
+    const b = document.getElementById("copy-btn"); b.textContent = "Copied"; setTimeout(()=>b.textContent="Copy resume text", 1400);
+  });
+  document.getElementById("docx-btn").addEventListener("click", downloadDocx);
+  document.getElementById("pdf-btn").addEventListener("click", downloadPdf);
+  document.getElementById("at-add").addEventListener("click", ()=>{
+    const role = document.getElementById("at-role").value.trim();
+    const company = document.getElementById("at-company").value.trim();
+    if(!role || !company) return;
+    trackerIdCounter++;
+    TRACKER.unshift({id:trackerIdCounter, dateApplied:todayISO(), role, company, type:"—", source:"—", status:"Applied", score,
+                      resumeFile:"", postingLink:document.getElementById("jd-link").value.trim(), notes:[]});
+    renderTracker(); renderRecent(); renderFollowUps();
+    const b = document.getElementById("at-add"); b.textContent = "Added ✓"; setTimeout(()=>b.textContent="Add to tracker", 1400);
+  });
+}
+function toggleIncludedJob(id){ includedJobIds.has(id) ? includedJobIds.delete(id) : includedJobIds.add(id); renderResumeOutput(); renderTailorControls(); }
+function toggleContactItem(key){ includedContactKeys.has(key) ? includedContactKeys.delete(key) : includedContactKeys.add(key); renderResumeOutput(); }
+function moveJob(id, dir){
+  const idx = JOB_HISTORY.findIndex(j=>j.id===id);
+  const newIdx = idx + dir;
+  if(newIdx < 0 || newIdx >= JOB_HISTORY.length) return;
+  [JOB_HISTORY[idx], JOB_HISTORY[newIdx]] = [JOB_HISTORY[newIdx], JOB_HISTORY[idx]];
+  renderResumeOutput(); renderTailorControls(); renderJobHistory();
+}
+function renderTailorControls(){
+  document.getElementById("contact-include-list").innerHTML = getContactItems().map(i=>`
+    <label style="display:flex;gap:6px;align-items:center;font-size:12px;margin-bottom:5px;color:var(--ink-muted);">
+      <input type="checkbox" ${includedContactKeys.has(i.key)?"checked":""} onchange="toggleContactItem('${i.key}')"> ${i.label}: ${i.value}
+    </label>`).join("") || `<div class="empty-hint" style="padding:6px 0;">No contact info saved yet — add some in Profile.</div>`;
+
+  document.getElementById("roles-include-list").innerHTML = JOB_HISTORY.map((j,idx)=>`
+    <div class="roles-reorder-row">
+      <label><input type="checkbox" ${includedJobIds.has(j.id)?"checked":""} onchange="toggleIncludedJob(${j.id})"> ${j.title} — ${j.company}</label>
+      <button class="btn btn-sm" onclick="moveJob(${j.id},-1)" ${idx===0?"disabled":""}>↑</button>
+      <button class="btn btn-sm" onclick="moveJob(${j.id},1)" ${idx===JOB_HISTORY.length-1?"disabled":""}>↓</button>
+    </div>`).join("") || `<div class="empty-hint" style="padding:6px 0;">No roles yet — add one in Job History.</div>`;
+}
+function renderResumeOutput(){
+  const jobsToShow = JOB_HISTORY.filter(j=>includedJobIds.has(j.id));
+  document.getElementById("resume-preview").innerHTML = `
+    <h2>${buildName()}</h2><div class="contact">${buildContactLine()}</div>
+    <h4>Summary</h4><div style="font-size:13px;color:var(--ink-muted);">${lastSummaryText}</div>
+    ${lastMatched.length ? `<h4>Skills</h4><div class="chips">${lastMatched.map(m=>`<span class="chip">${m.name}</span>`).join("")}</div>` : ""}
+    <h4>Experience</h4>
+    ${jobsToShow.length ? jobsToShow.map(j=>`
+      <div class="job-block">
+        <div class="job-title">${j.title} — ${j.company}</div>
+        <div class="job-dates">${jobDateRange(j)}</div>
+        <ul>${j.bullets.map(b=>`<li>${b}</li>`).join("")}</ul>
+      </div>`).join("") : `<div class="empty-hint" style="padding:10px 0;">No roles selected above — check at least one to include your experience.</div>`}
+    <h4>Education</h4>
+    ${EDUCATION.map(e=>`<div class="job-block"><div class="job-title">${e.degree}</div><div class="job-dates">${e.school} · ${e.year}</div></div>`).join("")}
+    <h4>Certifications</h4>
+    ${CERTIFICATIONS.map(c=>`<div class="job-block"><div class="job-title">${c.name}</div><div class="job-dates">${c.issuer} · ${c.year}</div></div>`).join("")}
+  `;
+}
+let analysisTimer;
+function hideTailorOutput(message){
+  document.getElementById("tailor-results").style.display = "none";
+  document.getElementById("tailor-controls-panel").style.display = "none";
+  const empty = document.getElementById("tailor-empty");
+  empty.style.display = "block";
+  empty.textContent = message;
+}
+function resetAnalyzeButton(){
+  const button = document.getElementById("analyze-btn");
+  button.disabled = false;
+  button.textContent = "Analyze & draft";
+}
+document.getElementById("analyze-btn").addEventListener("click", ()=>{
+  const text = document.getElementById("jd-input").value.trim();
+  const statusEl = document.getElementById("analysis-status");
+  if(!text){
+    statusEl.innerHTML = `<span class="analysis-message">Paste or load a job description first.</span>`;
+    document.getElementById("jd-input").focus();
+    return;
+  }
+
+  clearTimeout(analysisTimer);
+  const button = document.getElementById("analyze-btn");
+  button.disabled = true;
+  button.textContent = "Analyzing…";
+  hideTailorOutput("Career Copilot is reviewing the posting and preparing a grounded draft…");
+  statusEl.innerHTML = `<div class="analysis-working" role="status">
+    <span class="analysis-spinner" aria-hidden="true"></span>
+    <span><strong>Analyzing the posting</strong><br>Reviewing qualifications, matching confirmed skills, and drafting the résumé…</span>
+  </div>`;
+
+  analysisTimer = setTimeout(()=>{
+    analyze(text);
+    resetAnalyzeButton();
+    statusEl.innerHTML = `<span class="analysis-complete">Analysis complete — review the match score and tailored draft below.</span>`;
+  }, 1600);
+});
+document.getElementById("sample-btn").addEventListener("click", ()=>{
+  clearTimeout(analysisTimer);
+  clearTimeout(jdDebounceTimer);
+  resetAnalyzeButton();
+  const input = document.getElementById("jd-input");
+  input.value = SAMPLE_JD;
+  hideTailorOutput("The sample posting is ready. Click Analyze & draft to generate the résumé and match score.");
+  document.getElementById("analysis-status").innerHTML = `<span class="analysis-ready">Sample posting loaded. Click Analyze & draft to continue.</span>`;
+  input.focus();
+  input.setSelectionRange(0, 0);
+});
+async function downloadDocx(){
+  try{
+    const { Document, Packer, Paragraph, TextRun, HeadingLevel } = docx;
+    const jobsToShow = JOB_HISTORY.filter(j=>includedJobIds.has(j.id));
+    const children = [
+      new Paragraph({ text: buildName(), heading: HeadingLevel.HEADING_1 }),
+      new Paragraph({ children: [new TextRun(buildContactLine())] }),
+      new Paragraph({ text: "Summary", heading: HeadingLevel.HEADING_2 }),
+      new Paragraph({ children: [new TextRun(lastSummaryText)] }),
+    ];
+    if(lastMatched.length){
+      children.push(new Paragraph({ text: "Skills", heading: HeadingLevel.HEADING_2 }));
+      children.push(new Paragraph({ children:[new TextRun(lastMatched.map(m=>m.name).join(", "))] }));
+    }
+    if(jobsToShow.length){
+      children.push(new Paragraph({ text: "Experience", heading: HeadingLevel.HEADING_2 }));
+      jobsToShow.forEach(j=>{
+        children.push(new Paragraph({ children:[new TextRun({text:`${j.title} — ${j.company}`, bold:true})] }));
+        children.push(new Paragraph({ children:[new TextRun({text:jobDateRange(j), italics:true})] }));
+        j.bullets.forEach(b=> children.push(new Paragraph({ text:b, bullet:{level:0} })));
+      });
+    }
+    children.push(new Paragraph({ text: "Education", heading: HeadingLevel.HEADING_2 }));
+    EDUCATION.forEach(e=>{
+      children.push(new Paragraph({ children:[new TextRun({text:e.degree, bold:true})] }));
+      children.push(new Paragraph({ children:[new TextRun(`${e.school} · ${e.year}`)] }));
+    });
+    children.push(new Paragraph({ text: "Certifications", heading: HeadingLevel.HEADING_2 }));
+    CERTIFICATIONS.forEach(c=>{
+      children.push(new Paragraph({ children:[new TextRun({text:c.name, bold:true})] }));
+      children.push(new Paragraph({ children:[new TextRun(`${c.issuer} · ${c.year}`)] }));
+    });
+    const doc = new Document({ sections: [{ properties: {}, children }] });
+    const blob = await Packer.toBlob(doc);
+    triggerDownload(blob, "resume.docx");
+  }catch(err){ alert("Couldn't generate the .docx right now: " + err.message); }
+}
+function downloadPdf(){
+  try{
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF();
+    let y = 20;
+    const jobsToShow = JOB_HISTORY.filter(j=>includedJobIds.has(j.id));
+    doc.setFontSize(16); doc.text(buildName(), 14, y); y+=8;
+    doc.setFontSize(10); doc.text(buildContactLine(), 14, y); y+=10;
+    doc.setFontSize(12); doc.text("Summary", 14, y); y+=6;
+    doc.setFontSize(10);
+    const summaryLines = doc.splitTextToSize(lastSummaryText, 180); doc.text(summaryLines, 14, y); y += summaryLines.length*5+6;
+    if(lastMatched.length){
+      doc.setFontSize(12); doc.text("Skills", 14, y); y+=6; doc.setFontSize(10);
+      const skillsLine = doc.splitTextToSize(lastMatched.map(m=>m.name).join(", "), 180);
+      doc.text(skillsLine, 14, y); y += skillsLine.length*5+6;
+    }
+    if(jobsToShow.length){
+      doc.setFontSize(12); doc.text("Experience", 14, y); y+=6;
+      jobsToShow.forEach(j=>{
+        doc.setFontSize(10.5); doc.text(`${j.title} — ${j.company}`, 14, y); y+=5;
+        doc.setFontSize(9); doc.text(jobDateRange(j), 14, y); y+=5;
+        doc.setFontSize(10);
+        j.bullets.forEach(b=>{ const lines = doc.splitTextToSize("• "+b, 180); doc.text(lines, 14, y); y += lines.length*5+2; });
+        y += 3;
+      });
+    }
+    doc.setFontSize(12); doc.text("Education", 14, y); y+=6;
+    EDUCATION.forEach(e=>{ doc.setFontSize(10.5); doc.text(e.degree, 14, y); y+=5; doc.setFontSize(9); doc.text(`${e.school} · ${e.year}`, 14, y); y+=7; });
+    doc.setFontSize(12); doc.text("Certifications", 14, y); y+=6;
+    CERTIFICATIONS.forEach(c=>{ doc.setFontSize(10.5); doc.text(c.name, 14, y); y+=5; doc.setFontSize(9); doc.text(`${c.issuer} · ${c.year}`, 14, y); y+=7; });
+    doc.save("resume.pdf");
+  }catch(err){ alert("Couldn't generate the .pdf right now: " + err.message); }
+}
+function triggerDownload(blob, filename){
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a"); a.href = url; a.download = filename;
+  document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(url);
+}
+function csvEscape(val){
+  const s = String(val ?? "");
+  return /[",\n]/.test(s) ? '"' + s.replace(/"/g,'""') + '"' : s;
+}
+function downloadSkillsCsv(){
+  const headers = ["Skill ID","Category","Subcategory","Skill / Capability","Proficiency","Evidence / Use Case","ATS Keywords","Resume-Safe Claim","Notes / Limitations"];
+  const rows = SKILLS.map(s=>[s.id, s.cat, s.sub, s.name, s.prof, s.evidence, s.keywords.join("; "), s.claim, s.note]);
+  const csv = [headers, ...rows].map(r=>r.map(csvEscape).join(",")).join("\r\n");
+  triggerDownload(new Blob([csv], {type:"text/csv;charset=utf-8;"}), "skills_inventory.csv");
+}
+function downloadSkillsJson(){
+  const data = {
+    person: buildName(),
+    last_updated: todayISO(),
+    skills: SKILLS.map(s=>({
+      id: s.id, category: s.cat, subcategory: s.sub, name: s.name,
+      proficiency: s.prof, evidence: s.evidence, ats_keywords: s.keywords,
+      resume_safe_claim: s.claim, notes: s.note, status: "confirmed",
+    })),
+  };
+  triggerDownload(new Blob([JSON.stringify(data, null, 2)], {type:"application/json"}), "skills_inventory.json");
+}
+document.getElementById("download-skills-csv-btn").addEventListener("click", downloadSkillsCsv);
+document.getElementById("download-skills-json-btn").addEventListener("click", downloadSkillsJson);
+
+/* ---------------- Tracker ---------------- */
+document.getElementById("tr-source-wrap").innerHTML = sourceSelect("tr-source", "", true);
+function uniqueValues(field){ return [...new Set(TRACKER.map(r=>r[field]).filter(v=>v && v!=="—"))].sort(); }
+function populateFilters(){
+  const specs = [["filter-type","type","types"],["filter-source","source","sources"],["filter-status","status","statuses"]];
+  specs.forEach(([selId, field, plural])=>{
+    const sel = document.getElementById(selId);
+    const current = sel.value || "all";
+    sel.innerHTML = `<option value="all">All ${plural}</option>` + uniqueValues(field).map(v=>`<option value="${v}">${v}</option>`).join("");
+    sel.value = [...sel.options].some(o=>o.value===current) ? current : "all";
+  });
+}
+["filter-type","filter-source","filter-status"].forEach(id=>{
+  document.getElementById(id).addEventListener("change", ()=>{
+    trackerFilter = {type:document.getElementById("filter-type").value, source:document.getElementById("filter-source").value, status:document.getElementById("filter-status").value};
+    renderTracker();
+  });
+});
+function setSort(field){ trackerSort = trackerSort.field===field ? {field, dir: trackerSort.dir==="asc"?"desc":"asc"} : {field, dir:"asc"}; renderTracker(); }
+function updateSortIndicators(){
+  ["dateApplied","role","type","source","status","score"].forEach(f=>{
+    const th = document.getElementById("th-"+f);
+    const base = th.textContent.replace(/ [▲▼]$/,"");
+    th.textContent = base + (trackerSort.field===f ? (trackerSort.dir==="asc"?" ▲":" ▼") : "");
+  });
+}
+function trackerLinksCell(r){
+  const parts = [];
+  parts.push(r.resumeFile ? `<span class="muted" title="${r.resumeFile}">Résumé saved</span>` : `<span class="muted">No résumé selected</span>`);
+  parts.push(r.postingLink ? `<a href="${r.postingLink}" target="_blank" onclick="event.stopPropagation()">Posting ↗</a>` : `<span class="muted">No posting link</span>`);
+  return `<div class="tracker-links">${parts.join("")}</div>`;
+}
+function resumeRepositorySelect(currentValue){
+  return `<select class="field-input" id="te-resumefile">
+    <option value="">— No saved résumé linked —</option>
+    ${RESUME_REPOSITORY.map(file=>`<option ${file===currentValue?"selected":""}>${file}</option>`).join("")}
+  </select>`;
+}
+function trackerDetailRow(r){
+  return `<tr class="detail-row"><td colspan="7"><div class="detail-box">
+    <div class="field-grid">
+      <div><span class="field-label">Role</span><input class="field-input" id="te-role" value="${r.role}"></div>
+      <div><span class="field-label">Company</span><input class="field-input" id="te-company" value="${r.company}"></div>
+      <div><span class="field-label">Type</span>
+        <select class="field-input" id="te-type">${TRACKER_TYPES.map(t=>`<option ${r.type===t?"selected":""}>${t}</option>`).join("")}</select></div>
+      <div><span class="field-label">Source</span>${sourceSelect("te-source", r.source)}</div>
+      <div><span class="field-label">Status</span>
+        <select class="field-input" id="te-status">${["Applied","Interview","Offer","No response","Withdrawn"].map(t=>`<option ${r.status===t?"selected":""}>${t}</option>`).join("")}</select></div>
+      <div><span class="field-label">Date applied</span><input type="date" class="field-input" id="te-date" value="${r.dateApplied}"></div>
+    </div>
+    <div class="field-grid">
+      <div><span class="field-label">Submitted résumé</span>${resumeRepositorySelect(r.resumeFile)}<div class="foot-note" style="margin-top:5px;">Selects the exact résumé saved in the file repository in production.</div></div>
+      <div><span class="field-label">Job posting link</span><input class="field-input" id="te-postinglink" value="${r.postingLink}" placeholder="https://…"></div>
+    </div>
+    <div class="form-actions">
+      <button class="btn btn-sm btn-danger" style="margin-right:auto;" onclick="deleteTrackerEntry(${r.id})">Delete entry</button>
+      <button class="btn btn-sm" onclick="collapseTracker()">Close</button>
+      <button class="btn btn-sm btn-primary" onclick="saveTrackerEdit(${r.id})">Save changes</button>
+    </div>
+    <div class="field-label" style="margin-top:16px;">Notes</div>
+    <div id="notes-list-${r.id}">
+      ${r.notes.length ? r.notes.map((note,index)=>({note,index})).reverse().map(({note:n,index:i})=> editingNoteKey===`${r.id}:${i}` ? `
+        <div class="note-entry">
+          <input class="field-input" id="edit-note-${r.id}-${i}" value="${n.text}">
+          <div class="form-actions" style="margin-top:7px;">
+            <button class="btn btn-sm" onclick="cancelNoteEdit()">Cancel</button>
+            <button class="btn btn-sm btn-primary" onclick="saveNoteEdit(${r.id},${i})">Save note</button>
+          </div>
+        </div>` : `
+        <div class="note-entry note-entry-view">
+          <div class="note-entry-copy"><span class="note-date mono">${n.date}</span>${n.text}</div>
+          <span class="note-entry-actions">
+            <button class="note-action" onclick="startNoteEdit(${r.id},${i})">Edit</button>
+            <button class="note-action note-action-delete" onclick="deleteNote(${r.id},${i})">Delete</button>
+          </span>
+        </div>`).join("") : `<div class="empty-hint" style="padding:8px 0;">No notes yet.</div>`}
+    </div>
+    <div class="notes-add-row">
+      <input class="field-input" id="new-note-${r.id}" placeholder="Log a note — a call, an interview, a follow-up…">
+      <button class="btn btn-sm" onclick="addNote(${r.id})">Add note</button>
+    </div>
+  </div></td></tr>`;
+}
+function saveTrackerEdit(id){
+  TRACKER = TRACKER.map(r => r.id!==id ? r : {
+    ...r,
+    role: document.getElementById("te-role").value.trim(),
+    company: document.getElementById("te-company").value.trim(),
+    type: document.getElementById("te-type").value,
+    source: document.getElementById("te-source").value,
+    status: document.getElementById("te-status").value,
+    dateApplied: document.getElementById("te-date").value || r.dateApplied,
+    resumeFile: document.getElementById("te-resumefile").value,
+    postingLink: document.getElementById("te-postinglink").value.trim(),
+  });
+  renderTracker(); renderRecent(); renderFollowUps();
+}
+function collapseTracker(){ expandedTrackerId = null; editingNoteKey = null; renderTracker(); }
+function deleteTrackerEntry(id){
+  const entry = TRACKER.find(r=>r.id===id);
+  if(!entry) return;
+  openDeleteConfirmation({
+    title:"Delete this application?",
+    message:`Delete the ${entry.role} application at ${entry.company}, including its notes and links?`,
+    confirmLabel:"Delete application",
+    onConfirm:()=>{
+      TRACKER = TRACKER.filter(r=>r.id!==id);
+      expandedTrackerId = null;
+      renderTracker(); renderRecent(); renderFollowUps();
+    }
+  });
+}
+function addNote(id){
+  const input = document.getElementById("new-note-"+id);
+  const text = input.value.trim(); if(!text) return;
+  TRACKER = TRACKER.map(r => r.id!==id ? r : {...r, notes:[...r.notes, {date: formatNoteTimestamp(new Date()), text}]});
+  renderTracker();
+}
+function startNoteEdit(id, index){
+  editingNoteKey = `${id}:${index}`;
+  renderTracker();
+  document.getElementById(`edit-note-${id}-${index}`)?.focus();
+}
+function cancelNoteEdit(){ editingNoteKey = null; renderTracker(); }
+function saveNoteEdit(id, index){
+  const value = document.getElementById(`edit-note-${id}-${index}`)?.value.trim();
+  if(!value) return;
+  TRACKER = TRACKER.map(r=>r.id!==id ? r : {...r, notes:r.notes.map((n,i)=>i===index?{...n,text:value}:n)});
+  editingNoteKey = null;
+  renderTracker();
+}
+function deleteNote(id, index){
+  const entry = TRACKER.find(r=>r.id===id);
+  const note = entry?.notes[index];
+  if(!entry || !note) return;
+  openDeleteConfirmation({
+    title:"Delete this note?",
+    message:`Delete the note added ${note.date}?`,
+    confirmLabel:"Delete note",
+    onConfirm:()=>{
+      TRACKER = TRACKER.map(r=>r.id!==id ? r : {...r, notes:r.notes.filter((_,i)=>i!==index)});
+      editingNoteKey = null;
+      renderTracker();
+    }
+  });
+}
+function sortRows(rows){
+  const {field, dir} = trackerSort; const mul = dir==="asc" ? 1 : -1;
+  return [...rows].sort((a,b)=>{
+    if(field==="score") return (Number(a.score)-Number(b.score))*mul;
+    return String(a[field]||"").toLowerCase().localeCompare(String(b[field]||"").toLowerCase())*mul;
+  });
+}
+function renderTracker(){
+  populateFilters(); updateSortIndicators();
+  let rows = TRACKER.filter(r =>
+    (trackerFilter.type==="all" || r.type===trackerFilter.type) &&
+    (trackerFilter.source==="all" || r.source===trackerFilter.source) &&
+    (trackerFilter.status==="all" || r.status===trackerFilter.status));
+  rows = sortRows(rows);
+  document.getElementById("tracker-body").innerHTML = rows.map(r=>{
+    const dataRow = `<tr class="data-row" onclick="toggleTrackerRow(${r.id})">
+      <td data-label="Date Applied">${formatDate(r.dateApplied)}</td>
+      <td data-label="Role"><strong>${r.role}</strong><br><span style="color:var(--ink-muted);font-size:12px;">${r.company}</span></td>
+      <td data-label="Type"><span class="badge badge-flat">${r.type}</span></td>
+      <td data-label="Source">${r.source}</td>
+      <td data-label="Status"><span class="badge ${r.status==='Interview'||r.status==='Offer'?'badge-good':r.status==='No response'?'badge-flat':'badge-warn'}">${r.status}</span></td>
+      <td data-label="Match"><span class="badge ${r.score>=80?'badge-good':'badge-warn'}">${r.score}%</span></td>
+      <td data-label="Links">${trackerLinksCell(r)}</td>
+    </tr>`;
+    return dataRow + (expandedTrackerId===r.id ? trackerDetailRow(r) : "");
+  }).join("") || `<tr><td colspan="7"><div class="empty-hint">No entries match these filters.</div></td></tr>`;
+}
+function toggleTrackerRow(id){ expandedTrackerId = expandedTrackerId===id ? null : id; renderTracker(); }
+document.getElementById("tr-date").value = todayISO();
+document.getElementById("tr-add").addEventListener("click", ()=>{
+  const role = document.getElementById("tr-role").value.trim();
+  const company = document.getElementById("tr-company").value.trim();
+  if(!role || !company) return;
+  trackerIdCounter++;
+  TRACKER.unshift({id:trackerIdCounter, dateApplied: document.getElementById("tr-date").value || todayISO(), role, company,
+    type:document.getElementById("tr-type").value || "—", source:document.getElementById("tr-source").value || "—",
+    status:"Applied", score: Math.floor(Math.random()*20)+70, resumeFile:"", postingLink:"", notes:[]});
+  ["tr-role","tr-company"].forEach(id=>document.getElementById(id).value="");
+  document.getElementById("tr-type").value = "";
+  document.getElementById("tr-source").value = "";
+  document.getElementById("tr-date").value = todayISO();
+  renderTracker(); renderRecent(); renderFollowUps();
+});
+
+renderRecent(); renderInventory(); renderJobHistory(); renderEducation(); renderCertifications(); renderTracker(); renderProfile(); renderFollowUps();
+</script>
+</body>
+</html>
