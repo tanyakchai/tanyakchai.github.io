@@ -11,7 +11,7 @@ style.css                           Shared design system (all pages)
 script.js                           Scroll-reveal animation (respects
                                      prefers-reduced-motion)
 work/career-copilot/
-  index.html                        Public, high-level Career Copilot case study
+  index.html                        Public, high-level Tessera case study
   app-screenshot.png                General product screenshot
   prototype.html                    Public interface prototype using fictional data
 ```

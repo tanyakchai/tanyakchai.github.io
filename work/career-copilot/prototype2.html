@@ -4,7 +4,7 @@
 <script defer src="/analytics.js"></script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Career Copilot — Dark concept</title>
+<title>Tessera — Dark Concept Prototype</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Sora:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -249,7 +249,7 @@
   .shell{position:relative;z-index:1;}
   /* Informational, not a warning -- the amber read as an alert against the
      navy. Same blue/violet panel treatment as the reference page's
-     "Copilot insight" card, so it sits inside the palette. */
+     insight card, so it sits inside the palette. */
   .prototype-notice{position:relative;z-index:1;
     background:linear-gradient(135deg,rgba(79,124,255,.12),rgba(139,92,246,.10));
     border-color:rgba(79,124,255,.30); color:#C3D0F0;}
@@ -328,7 +328,7 @@
 
 <div class="shell">
   <div class="sidebar">
-    <div class="wordmark">Career<span>Copilot</span></div>
+    <div class="wordmark">Tess<span>era</span></div>
     <div class="tagline">EVIDENCE-BACKED · NOT GUESSED</div>
     <nav class="nav" id="nav">
       <button class="nav-item active" data-view="dashboard"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="9" rx="1"/><rect x="14" y="3" width="7" height="5" rx="1"/><rect x="14" y="12" width="7" height="9" rx="1"/><rect x="3" y="16" width="7" height="5" rx="1"/></svg>Dashboard</button>
@@ -1597,7 +1597,7 @@ document.getElementById("analyze-btn").addEventListener("click", ()=>{
   const button = document.getElementById("analyze-btn");
   button.disabled = true;
   button.textContent = "Analyzing…";
-  hideTailorOutput("Career Copilot is reviewing the posting and preparing a grounded draft…");
+  hideTailorOutput("Tessera is reviewing the posting and preparing a grounded draft…");
   statusEl.innerHTML = `<div class="analysis-working" role="status">
     <span class="analysis-spinner" aria-hidden="true"></span>
     <span><strong>Analyzing the posting</strong><br>Reviewing qualifications, matching confirmed skills, and drafting the résumé…</span>
