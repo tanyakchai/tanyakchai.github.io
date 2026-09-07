@@ -222,6 +222,31 @@ footer.site h2{font-size:clamp(26px,3.4vw,36px); margin-bottom:14px;}
 .shot-frame.no-shot video{display:none;}
 .shot-frame.no-shot .shot-fallback{display:flex;}
 
+.screenshot-grid{
+  display:grid; grid-template-columns:repeat(2, minmax(0, 1fr));
+  gap:18px; margin-top:24px;
+}
+.screenshot-card{margin:0; min-width:0;}
+.screenshot-open{
+  width:100%; padding:0; border:1px solid var(--line); border-radius:10px;
+  overflow:hidden; background:var(--ink-raised); color:inherit; cursor:zoom-in;
+  transition:border-color 0.15s ease, transform 0.15s ease;
+}
+.screenshot-open:hover,.screenshot-open:focus-visible{border-color:var(--accent); transform:translateY(-2px);}
+.screenshot-open img{width:100%; aspect-ratio:16 / 9; object-fit:cover; object-position:top left;}
+.screenshot-card figcaption{margin-top:8px; color:var(--muted); font-size:13px;}
+.image-lightbox{
+  width:min(94vw, 1440px); max-width:none; max-height:94vh; padding:46px 14px 14px;
+  border:1px solid var(--line-strong); border-radius:12px; background:var(--ink-raised); color:var(--paper);
+}
+.image-lightbox::backdrop{background:rgba(5,7,10,0.88); backdrop-filter:blur(3px);}
+.image-lightbox img{width:100%; max-height:calc(94vh - 80px); object-fit:contain;}
+.lightbox-close{
+  position:absolute; top:10px; right:12px; padding:6px 10px; border:1px solid var(--line-strong);
+  border-radius:6px; background:var(--ink); color:var(--paper); font:600 13px var(--font-body); cursor:pointer;
+}
+.lightbox-close:hover,.lightbox-close:focus-visible{border-color:var(--accent); color:var(--accent);}
+
 .logo-card{
   border-radius:10px; background:var(--paper); padding:48px;
   display:flex; align-items:center; justify-content:center;
@@ -245,6 +270,7 @@ a:focus-visible, button:focus-visible{outline:2px solid var(--accent); outline-o
   .wrap{padding:0 20px;}
   section{padding:40px 0;}
   .meta-row{gap:20px;}
+  .screenshot-grid{grid-template-columns:1fr;}
   .site-avatar{width:42px; height:42px;} .site-name{font-size:17px;} header.site .wrap{padding-top:12px; padding-bottom:12px;} nav.primary{gap:12px; font-size:13px;}
 }
 
@@ -363,13 +389,41 @@ a:focus-visible, button:focus-visible{outline:2px solid var(--accent); outline-o
 <section class="case-body">
   <div class="wrap">
     <p class="eyebrow">Product preview</p>
-    <h2>A general look at the experience</h2>
+    <h2>A look at the experience</h2>
     <p class="muted">The public prototype uses fictional information and simulated behavior to demonstrate the interface. It does not include the production intelligence, private data handling, or proprietary decision logic.</p>
-    <div class="shot-frame" style="margin-top:22px;">
-      <img src="app-screenshot.png" alt="VeriVault interface showing a fictional dashboard and career-management workspace">
+    <div class="screenshot-grid">
+      <figure class="screenshot-card">
+        <button class="screenshot-open" type="button" data-full="app-screenshot.png" data-alt="VeriVault dashboard with application activity, skills summary, and search pipeline" aria-label="Expand the VeriVault dashboard screenshot">
+          <img src="app-screenshot.png" alt="VeriVault dashboard with application activity, skills summary, and search pipeline">
+        </button>
+        <figcaption>Dashboard</figcaption>
+      </figure>
+      <figure class="screenshot-card">
+        <button class="screenshot-open" type="button" data-full="verivault-skills-inventory.png" data-alt="VeriVault skills inventory with filters and evidence-backed skill records" aria-label="Expand the VeriVault skills inventory screenshot">
+          <img src="verivault-skills-inventory.png" alt="VeriVault skills inventory with filters and evidence-backed skill records">
+        </button>
+        <figcaption>Skills inventory</figcaption>
+      </figure>
+      <figure class="screenshot-card">
+        <button class="screenshot-open" type="button" data-full="verivault-tailor-resume.png" data-alt="VeriVault resume-tailoring workspace with a job description and selected contact information" aria-label="Expand the VeriVault resume tailoring screenshot">
+          <img src="verivault-tailor-resume.png" alt="VeriVault resume-tailoring workspace with a job description and selected contact information">
+        </button>
+        <figcaption>Resume tailoring</figcaption>
+      </figure>
+      <figure class="screenshot-card">
+        <button class="screenshot-open" type="button" data-full="verivault-job-tracker.png" data-alt="VeriVault job tracker with application filters, statuses, and linked materials" aria-label="Expand the VeriVault job tracker screenshot">
+          <img src="verivault-job-tracker.png" alt="VeriVault job tracker with application filters, statuses, and linked materials">
+        </button>
+        <figcaption>Job tracker</figcaption>
+      </figure>
     </div>
   </div>
 </section>
+
+<dialog class="image-lightbox" id="imageLightbox" aria-label="Expanded VeriVault screenshot">
+  <button class="lightbox-close" type="button" aria-label="Close expanded screenshot">Close ×</button>
+  <img src="" alt="">
+</dialog>
 
 <hr class="rule">
 
@@ -394,6 +448,25 @@ a:focus-visible, button:focus-visible{outline:2px solid var(--accent); outline-o
     </div>
   </div>
 </footer>
+
+<script>
+const lightbox = document.getElementById('imageLightbox');
+const lightboxImage = lightbox.querySelector('img');
+const lightboxClose = lightbox.querySelector('.lightbox-close');
+
+document.querySelectorAll('.screenshot-open').forEach((button) => {
+  button.addEventListener('click', () => {
+    lightboxImage.src = button.dataset.full;
+    lightboxImage.alt = button.dataset.alt;
+    lightbox.showModal();
+  });
+});
+
+lightboxClose.addEventListener('click', () => lightbox.close());
+lightbox.addEventListener('click', (event) => {
+  if (event.target === lightbox) lightbox.close();
+});
+</script>
 
 </body>
 </html>
