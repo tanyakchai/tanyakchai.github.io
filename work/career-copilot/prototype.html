@@ -24,7 +24,8 @@
   .shell{display:flex;min-height:100vh;}
   .sidebar{width:216px;flex-shrink:0;background:var(--raised);border-right:1px solid var(--line);padding:28px 18px;display:flex;flex-direction:column;position:sticky;top:0;height:100vh;overflow-y:auto;}
   .wordmark{font-family:var(--font-display);font-size:19px;font-weight:700;margin-bottom:4px;}
-  .wordmark span{color:var(--ledger);}
+  .wordmark .wm-veri{color:var(--ledger);}
+  .wordmark .wm-vault{color:#314785;}
   .tagline{font-size:11px;color:var(--ink-faint);margin-bottom:30px;letter-spacing:0.02em;}
   .nav{display:flex;flex-direction:column;gap:2px;}
   .nav-item{display:flex;align-items:center;gap:10px;padding:9px 10px;border-radius:var(--radius);font-size:13.5px;font-weight:500;color:var(--ink-muted);border:1px solid transparent;background:none;text-align:left;width:100%;}
@@ -204,7 +205,7 @@
   .source-new-row{display:flex;align-items:center;gap:5px;}
   .source-new-row .field-input{min-width:0;}
   .add-row{background:var(--raised);border:1px solid var(--line);border-radius:8px;padding:16px 18px;margin-bottom:20px;}
-  .add-row .fields{display:grid;grid-template-columns:1.2fr 1fr 0.85fr 1fr 0.9fr;gap:10px;margin-bottom:10px;}
+  .add-row .fields{display:grid;grid-template-columns:1.2fr 1fr 0.8fr 1fr 0.9fr 0.9fr;gap:10px;margin-bottom:10px;}
   .add-row input,.add-row select{padding:8px 10px;border:1px solid var(--line);border-radius:var(--radius);font-size:12.5px;font-family:var(--font-body);width:100%;background:var(--paper);height:34px;}
   .foot-note{font-size:11px;color:var(--ink-faint);margin-top:16px;}
   #followup-section{margin-bottom:26px;}
@@ -257,7 +258,7 @@
 
 <div class="shell">
   <div class="sidebar">
-    <div class="wordmark">Veri<span>Vault</span></div>
+    <div class="wordmark"><span class="wm-veri">Veri</span><span class="wm-vault">Vault</span></div>
     <div class="tagline">Start with what's true. Build what's next.</div>
     <nav class="nav" id="nav">
       <button class="nav-item active" data-view="dashboard"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="9" rx="1"/><rect x="14" y="3" width="7" height="5" rx="1"/><rect x="14" y="12" width="7" height="9" rx="1"/><rect x="3" y="16" width="7" height="5" rx="1"/></svg>Dashboard</button>
@@ -307,6 +308,7 @@
           <button class="btn btn-sm btn-primary" id="add-skill-btn">+ Add skill</button>
         </div>
       </div>
+      <div hidden aria-hidden="true"><input type="file" id="resume-upload"><button id="download-skills-csv-btn"></button><button id="download-skills-json-btn"></button><div id="upload-status"></div></div>
       <div id="add-skill-panel"></div>
       <div class="search-row"><input type="text" id="inv-search" placeholder="Search skills, categories, evidence, or tools…"></div>
       <div class="inventory-toolbar">
@@ -402,6 +404,7 @@
           <input type="text" id="tr-company" placeholder="Company">
           <select id="tr-type"><option value="" selected disabled>Type</option><option value="—">—</option><option>W2</option><option>Contract</option><option>Contract-to-hire</option><option>1099 / Independent contractor</option><option>C2C</option><option>Temporary</option><option>Part-time</option><option>Seasonal</option><option>Freelance / consulting</option><option>Internship</option></select>
           <div id="tr-source-wrap"></div>
+          <select id="tr-status"><option value="" selected disabled>Status</option><option value="—">—</option><option>Applied</option><option>Interview</option><option>Offer</option><option>Rejected</option><option>No response</option><option>Withdrawn</option></select>
           <input type="date" id="tr-date">
         </div>
         <button class="btn btn-sm" id="tr-add">+ Add entry</button>
@@ -499,8 +502,8 @@
 
 <div class="tabbar" id="tabbar">
   <button class="active" data-view="dashboard">⌂<br>Home</button>
-  <button data-view="inventory">≡<br>Skills</button>
   <button data-view="jobhistory">▥<br>Experience</button>
+  <button data-view="inventory">≡<br>Skills</button>
   <button data-view="tailor">✎<br>Tailor</button>
   <button data-view="tracker">▤<br>Tracker</button>
   <button data-view="assistant">◯<br>Maeve</button>
@@ -661,7 +664,7 @@ let addingSkill = false;
 let editingJobId = null;
 let addingJob = false;
 let educationIdCounter = 1;
-let certificationIdCounter = 2;
+let certificationIdCounter = 1;
 let editingEducationId = null;
 let addingEducation = false;
 let editingCertificationId = null;
@@ -1016,8 +1019,23 @@ function wireEditForm(existing, onSave, onCancel, onDelete){
 function renderInventory(){
   renderDashboardSkillCount();
   const filter = (document.getElementById("inv-search")?.value || "").toLowerCase();
+  const categoryFilter = document.getElementById("inv-filter-cat")?.value || "all";
+  const proficiencyFilter = document.getElementById("inv-filter-prof")?.value || "all";
+  const sort = document.getElementById("inv-sort")?.value || "added-desc";
   const el = document.getElementById("inv-list");
-  const rows = SKILLS.filter(s => s.name.toLowerCase().includes(filter) || s.cat.toLowerCase().includes(filter) || s.keywords.some(k=>k.includes(filter)));
+  let rows = SKILLS.filter(s =>
+    (categoryFilter==="all" || s.cat===categoryFilter) &&
+    (proficiencyFilter==="all" || s.prof===proficiencyFilter) &&
+    (s.name.toLowerCase().includes(filter) || s.cat.toLowerCase().includes(filter) || s.sub.toLowerCase().includes(filter) || s.evidence.toLowerCase().includes(filter) || s.keywords.some(k=>k.includes(filter)))
+  );
+  rows = [...rows].sort((a,b)=>{
+    if(sort==="name-asc") return a.name.localeCompare(b.name);
+    if(sort==="name-desc") return b.name.localeCompare(a.name);
+    if(sort==="added-asc") return a.id.localeCompare(b.id);
+    return b.id.localeCompare(a.id);
+  });
+  const countEl=document.getElementById("inv-count");
+  if(countEl) countEl.textContent=`${rows.length} ${rows.length===1?"skill":"skills"}`;
   el.innerHTML = rows.map(s=>{
     if(editingSkillId === s.id) return `<div id="edit-${s.id}"></div>`;
     return `
@@ -1057,6 +1075,11 @@ function renderInventory(){
   }
 }
 document.getElementById("inv-search").addEventListener("input", renderInventory);
+const inventoryCategorySelect=document.getElementById("inv-filter-cat");
+inventoryCategorySelect.innerHTML=`<option value="all">Category: All</option>`+Object.keys(CATEGORY_MAP).map(category=>`<option value="${category}">${category}</option>`).join("");
+inventoryCategorySelect.addEventListener("change",renderInventory);
+document.getElementById("inv-filter-prof").addEventListener("change",renderInventory);
+document.getElementById("inv-sort").addEventListener("change",renderInventory);
 document.getElementById("add-skill-btn").addEventListener("click", ()=>{
   addingSkill = !addingSkill;
   const panel = document.getElementById("add-skill-panel");
@@ -1820,7 +1843,7 @@ function renderTracker(){
       <td data-label="Type"><span class="badge badge-flat">${r.type}</span></td>
       <td data-label="Source">${r.source}</td>
       <td data-label="Status"><span class="badge ${r.status==='Interview'||r.status==='Offer'?'badge-good':r.status==='No response'?'badge-flat':'badge-warn'}">${r.status}</span></td>
-      <td data-label="Match"><span class="badge ${r.score>=80?'badge-good':'badge-warn'}">${r.score}%</span></td>
+      <td data-label="Match"><span class="badge ${r.score>=80?'badge-good':r.score?'badge-warn':'badge-flat'}">${r.score ? r.score+'%' : '—'}</span></td>
       <td data-label="Links">${trackerLinksCell(r)}</td>
     </tr>`;
     return dataRow + (expandedTrackerId===r.id ? trackerDetailRow(r) : "");
@@ -1835,10 +1858,11 @@ document.getElementById("tr-add").addEventListener("click", ()=>{
   trackerIdCounter++;
   TRACKER.unshift({id:trackerIdCounter, dateApplied: document.getElementById("tr-date").value || todayISO(), role, company,
     type:document.getElementById("tr-type").value || "—", source:document.getElementById("tr-source").value || "—",
-    status:"Applied", score: Math.floor(Math.random()*20)+70, resumeFile:"", postingLink:"", notes:[]});
+    status:document.getElementById("tr-status").value || "Applied", score:0, resumeFile:"", postingLink:"", notes:[]});
   ["tr-role","tr-company"].forEach(id=>document.getElementById(id).value="");
   document.getElementById("tr-type").value = "";
   document.getElementById("tr-source").value = "";
+  document.getElementById("tr-status").value = "";
   document.getElementById("tr-date").value = todayISO();
   renderTracker(); renderRecent(); renderFollowUps();
 });
