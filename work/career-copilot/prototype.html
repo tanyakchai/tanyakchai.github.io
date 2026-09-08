@@ -73,6 +73,10 @@
   .search-row{display:flex;gap:10px;margin-bottom:18px;flex-wrap:wrap;}
   .search-row input{flex:1;min-width:180px;padding:9px 12px;border:1px solid var(--line);border-radius:var(--radius);font-size:13.5px;font-family:var(--font-body);background:var(--raised);height:36px;}
   .search-row input:focus{outline:2px solid var(--ledger);outline-offset:1px;}
+  .inventory-toolbar{display:flex;justify-content:space-between;gap:10px;align-items:center;flex-wrap:wrap;margin:0 0 10px;}
+  .inventory-filters{display:flex;gap:8px;flex-wrap:wrap;}
+  .inventory-toolbar select{height:34px;padding:7px 30px 7px 11px;border:1px solid var(--line);border-radius:20px;background-color:var(--raised);font:12px var(--font-body);color:var(--ink-muted);}
+  .inventory-count{font-size:12px;color:var(--ink-faint);margin-bottom:14px;}
   .skill-card{background:var(--raised);border:1px solid var(--line);border-radius:8px;padding:16px 18px;margin-bottom:12px;cursor:pointer;}
   .skill-card:hover{border-color:var(--ink-faint);}
   .skill-top{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;margin-bottom:8px;}
@@ -85,8 +89,30 @@
   .chips{display:flex;flex-wrap:wrap;gap:5px;margin-top:9px;}
   .chip{font-size:10.5px;font-family:var(--font-mono);background:var(--paper);border:1px solid var(--line);border-radius:3px;padding:2px 7px;color:var(--ink-muted);}
   .prof-badge{font-size:10.5px;font-family:var(--font-mono);padding:2px 8px;border-radius:3px;text-transform:uppercase;letter-spacing:0.03em;}
-  .prof-Experienced{background:var(--ledger-soft);color:var(--ledger-ink);}
-  .prof-Foundational,.prof-Working{background:var(--flag-soft);color:var(--flag-ink);}
+  .prof-Advanced{background:var(--ledger-soft);color:var(--ledger-ink);}
+  .prof-Intermediate{background:var(--flag-soft);color:var(--flag-ink);}
+  .prof-Beginner{background:#E7F1ED;color:#466C61;}
+
+  .stat-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:16px;}
+  .stat-card{background:var(--raised);border:1px solid var(--line);border-radius:8px;padding:15px 16px;min-height:108px;}
+  .stat-label{font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-faint);display:flex;align-items:center;gap:7px;}
+  .stat-dot{width:7px;height:7px;border-radius:50%;background:var(--ledger);}
+  .stat-dot.blue{background:#314785}.stat-dot.orange{background:var(--flag);}
+  .stat-value{font-family:var(--font-display);font-size:30px;font-weight:600;line-height:1.05;margin:7px 0 2px;}
+  .stat-detail{font-size:11.5px;color:var(--ink-muted);}
+  .dashboard-panel{background:var(--raised);border:1px solid var(--line);border-radius:8px;padding:20px;margin-bottom:16px;}
+  .dashboard-panel h3{font-size:15px;margin-bottom:12px;}
+  .dashboard-columns{display:grid;grid-template-columns:1.35fr .85fr;gap:16px;}
+  .metric-row{display:grid;grid-template-columns:150px 1fr 22px;align-items:center;gap:10px;font-size:12px;margin:9px 0;}
+  .metric-bar{height:10px;background:var(--paper);border-radius:2px;overflow:hidden;}
+  .metric-fill{height:100%;background:var(--ledger);border-radius:2px;}.metric-fill.mid{background:#65A08F}.metric-fill.light{background:#ADD6C9;}
+  .metric-count{text-align:right;color:var(--ink-muted);}
+  .pipeline-row{display:grid;grid-template-columns:1fr 74px 20px;align-items:center;gap:10px;font-size:12px;margin:10px 0;}
+  .confidence-note{display:flex;align-items:center;justify-content:center;gap:12px;color:var(--ink-muted);font-size:12px;margin-top:22px;}
+  .confidence-note strong{display:block;color:var(--ink);font-weight:600;}
+  .confidence-icon{width:38px;height:38px;border-radius:50%;display:grid;place-items:center;background:var(--flag-soft);color:var(--flag);font-size:20px;}
+  .assistant-example{display:flex;flex-wrap:wrap;gap:8px;margin:14px 0;}
+  .assistant-response{min-height:92px;background:var(--paper);border:1px solid var(--line);border-radius:8px;padding:14px;color:var(--ink-muted);font-size:13px;}
 
   .panel{background:var(--raised);border:1px solid var(--line);border-radius:8px;padding:18px 20px;margin-bottom:16px;}
   .field-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px;}
@@ -209,7 +235,9 @@
     .tabbar button{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;background:none;border:none;font-size:9.5px;color:var(--ink-faint);padding:6px 1px;font-family:var(--font-body);min-width:52px;}
     .tabbar button.active{color:var(--ledger-ink);}
     .view{padding:22px 18px 92px;}
-    .grid-2{grid-template-columns:1fr;} .field-grid{grid-template-columns:1fr;}
+    .grid-2,.dashboard-columns{grid-template-columns:1fr;} .field-grid{grid-template-columns:1fr;}
+    .stat-grid{grid-template-columns:repeat(2,1fr);}
+    .metric-row{grid-template-columns:110px 1fr 22px;}
     .tailor-grid{grid-template-columns:1fr;} .match-panel{position:static;}
     .add-row .fields{grid-template-columns:1fr;}
     .filter-row{flex-direction:column;}
@@ -230,64 +258,71 @@
 <div class="shell">
   <div class="sidebar">
     <div class="wordmark">Veri<span>Vault</span></div>
-    <div class="tagline">EVIDENCE-BACKED · NOT GUESSED</div>
+    <div class="tagline">Start with what's true. Build what's next.</div>
     <nav class="nav" id="nav">
       <button class="nav-item active" data-view="dashboard"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="9" rx="1"/><rect x="14" y="3" width="7" height="5" rx="1"/><rect x="14" y="12" width="7" height="9" rx="1"/><rect x="3" y="16" width="7" height="5" rx="1"/></svg>Dashboard</button>
+      <button class="nav-item" data-view="jobhistory"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>Experience &amp; Education</button>
       <button class="nav-item" data-view="inventory"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 6h11M9 12h11M9 18h11M4 6h.01M4 12h.01M4 18h.01"/></svg>Skills inventory</button>
-      <button class="nav-item" data-view="jobhistory"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>Career background</button>
       <button class="nav-item" data-view="tailor"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 3v4a1 1 0 0 0 1 1h4"/><path d="M17 21H7a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h7l5 5v11a2 2 0 0 1-2 2Z"/></svg>Tailor a resume</button>
       <button class="nav-item" data-view="tracker"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 10h18M8 2v4M16 2v4"/></svg>Job tracker</button>
+      <button class="nav-item" data-view="assistant"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a4 4 0 0 1-4 4H8l-5 3V7a4 4 0 0 1 4-4h10a4 4 0 0 1 4 4z"/></svg>Ask Maeve</button>
       <button class="nav-item" data-view="profile"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 21v-1a8 8 0 0 1 16 0v1"/></svg>Profile</button>
     </nav>
     <div class="sidebar-foot">Fictional demo data · resets<br>whenever the page opens</div>
   </div>
 
   <div class="main">
-    <div class="prototype-notice" role="note"><strong>Demo prototype:</strong> Avery Morgan and all companies, applications, and résumé details shown here are fictional. Matching and résumé-upload results are simulated; files are not parsed, uploaded, or stored. Changes reset when the page is refreshed.</div>
+    <div class="prototype-notice" role="note"><strong>Demo prototype:</strong> Jordan Seeker and all companies, applications, and résumé details shown here are fictional. Matching, assistant responses, and résumé-upload results are simulated; files are not parsed, uploaded, or stored. Changes reset when the page is refreshed.</div>
     <section class="view active" id="view-dashboard">
       <div class="view-head">
-        <div><h1>Good to see you, Avery.</h1><div class="view-sub">Your fictional sales-career demo is ready to explore</div></div>
+        <div><h1>Good to see you, Job Seeker.</h1><div class="view-sub">Here's where things stand today.</div></div>
       </div>
-      <div id="followup-section" style="display:none;">
-        <div class="section-label">Follow up — no response yet</div>
-        <div id="dash-followup"></div>
+      <div class="stat-grid">
+        <div class="stat-card"><div class="stat-label"><span class="stat-dot"></span>Active applications</div><div class="stat-value" id="dash-active">3</div><div class="stat-detail">1 sent this week</div></div>
+        <div class="stat-card"><div class="stat-label"><span class="stat-dot blue"></span>Interviewing</div><div class="stat-value" id="dash-interviews">1</div><div class="stat-detail">next: Sep 10, 2026</div></div>
+        <div class="stat-card"><div class="stat-label"><span class="stat-dot"></span>Offers</div><div class="stat-value" id="dash-offers">0</div><div class="stat-detail">—</div></div>
+        <div class="stat-card"><div class="stat-label"><span class="stat-dot orange"></span>Waiting on a reply</div><div class="stat-value" id="dash-waiting">0</div><div class="stat-detail">everyone's replied</div></div>
       </div>
-      <div class="grid-2">
-        <div class="card">
-          <div class="card-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 6h11M9 12h11M9 18h11M4 6h.01M4 12h.01M4 18h.01"/></svg></div>
-          <h3>Skills inventory</h3><p id="dash-skill-count">8 confirmed sales skills are loaded with evidence and ATS keywords.</p>
-          <button class="btn" data-goto="inventory">Review inventory</button>
+      <div class="dashboard-panel">
+        <h3>Today’s tasks</h3>
+        <div class="view-sub">Nothing needs your attention today. Tailor a résumé or add an application when you're ready.</div>
+      </div>
+      <div class="dashboard-columns">
+        <div class="dashboard-panel">
+          <h3>Your skills <span id="dash-skill-count" style="float:right;font:400 12px var(--font-body);color:var(--ink-faint);">15 confirmed</span></h3>
+          <div id="dash-skill-chart"></div>
         </div>
-        <div class="card">
-          <div class="card-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 3v4a1 1 0 0 0 1 1h4"/><path d="M17 21H7a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h7l5 5v11a2 2 0 0 1-2 2Z"/></svg></div>
-          <h3>Tailor a resume</h3><p>Paste a job description, get a grounded draft and a match score.</p>
-          <button class="btn btn-primary" data-goto="tailor">Start tailoring</button>
+        <div class="dashboard-panel">
+          <h3>Search pipeline</h3>
+          <div id="dash-pipeline"></div>
         </div>
       </div>
-      <div class="section-label">Recent</div>
-      <div id="dash-recent"></div>
+      <div class="confidence-note"><span class="confidence-icon">☼</span><span><strong>Confidence isn't a feeling you wait for.</strong>It's what happens when you see the evidence.</span></div>
     </section>
 
     <section class="view" id="view-inventory">
       <div class="view-head">
         <div><h1>Skills inventory</h1><div class="view-sub">Every entry here is confirmed, not inferred — evidence attached.</div></div>
         <div class="head-actions">
-          <label class="btn btn-sm" style="margin:0;">Upload resume<input type="file" id="resume-upload" accept=".txt,.md,.pdf,.docx" style="display:none;"></label>
-          <button class="btn btn-sm" id="download-skills-csv-btn">Download .csv</button>
-          <button class="btn btn-sm" id="download-skills-json-btn">Download .json</button>
           <button class="btn btn-sm btn-primary" id="add-skill-btn">+ Add skill</button>
         </div>
       </div>
-      <div id="upload-status"></div>
-      <div class="foot-note" style="margin:0 0 14px;">Demo only: selecting a résumé does not run extraction. The file is not parsed, uploaded, or stored; the suggestions shown are prewritten examples.</div>
       <div id="add-skill-panel"></div>
-      <div class="search-row"><input type="text" id="inv-search" placeholder="Search by skill, category, or tool…"></div>
+      <div class="search-row"><input type="text" id="inv-search" placeholder="Search skills, categories, evidence, or tools…"></div>
+      <div class="inventory-toolbar">
+        <div class="inventory-filters">
+          <select id="inv-filter-cat" aria-label="Filter skills by category"><option value="all">Category: All</option></select>
+          <select id="inv-filter-prof" aria-label="Filter skills by level"><option value="all">Level: All</option><option>Advanced</option><option>Intermediate</option><option>Beginner</option></select>
+        </div>
+        <select id="inv-sort" aria-label="Sort skills"><option value="added-desc">Sort: Newest first</option><option value="added-asc">Oldest first</option><option value="name-asc">Name A–Z</option><option value="name-desc">Name Z–A</option></select>
+      </div>
+      <div class="inventory-count" id="inv-count"></div>
       <div id="inv-list"></div>
     </section>
 
     <section class="view" id="view-jobhistory">
       <div class="view-head">
-        <div><h1>Career background</h1><div class="view-sub">Manage the roles, education, and credentials that feed every tailored résumé.</div></div>
+        <div><h1>Experience &amp; Education</h1><div class="view-sub">The roles, degrees, and credentials that feed every tailored résumé.</div></div>
       </div>
 
       <div class="profile-block" style="padding-top:0;">
@@ -315,7 +350,7 @@
 
       <div class="profile-block">
         <div class="profile-block-head">
-          <div><div class="section-label" style="margin-bottom:2px;">Certifications</div><div class="controls-sub">Professional credentials and completed sales training.</div></div>
+          <div><div class="section-label" style="margin-bottom:2px;">Certifications</div><div class="controls-sub">Professional credentials and completed training.</div></div>
           <button class="btn btn-sm btn-primary" id="add-certification-btn">+ Add certification</button>
         </div>
         <div id="add-certification-panel"></div>
@@ -391,6 +426,22 @@
       <div class="foot-note">This preview resets on reload — entries aren't saved yet.</div>
     </section>
 
+    <section class="view" id="view-assistant">
+      <div class="view-head">
+        <div><h1>Ask Maeve</h1><div class="view-sub">Explore your fictional career data through a guided assistant.</div></div>
+      </div>
+      <div class="panel">
+        <div class="section-label">Try a sample question</div>
+        <div class="assistant-example">
+          <button class="btn btn-sm" data-maeve-question="Which skills are strongest for a backend role?">Strongest skills</button>
+          <button class="btn btn-sm" data-maeve-question="What should I focus on next?">Next focus</button>
+          <button class="btn btn-sm" data-maeve-question="Summarize my application pipeline.">Pipeline summary</button>
+        </div>
+        <div class="link-row"><input id="maeve-input" type="text" placeholder="Ask about the sample career data…"><button class="btn btn-primary" id="maeve-send">Ask</button></div>
+        <div class="assistant-response" id="maeve-response">Maeve’s responses are simulated in this prototype. Choose a sample question or type your own to see the intended interaction.</div>
+      </div>
+    </section>
+
     <section class="view" id="view-profile">
       <div class="view-head">
         <div><h1>Profile</h1><div class="view-sub">These are defaults — you can still adjust what's included from the Tailor tab per resume.</div></div>
@@ -449,9 +500,10 @@
 <div class="tabbar" id="tabbar">
   <button class="active" data-view="dashboard">⌂<br>Home</button>
   <button data-view="inventory">≡<br>Skills</button>
-  <button data-view="jobhistory">▥<br>Career</button>
+  <button data-view="jobhistory">▥<br>Experience</button>
   <button data-view="tailor">✎<br>Tailor</button>
   <button data-view="tracker">▤<br>Tracker</button>
+  <button data-view="assistant">◯<br>Maeve</button>
   <button data-view="profile">◐<br>Profile</button>
 </div>
 
@@ -460,97 +512,76 @@
 <script>
 /* ---------------- Prototype configuration ---------------- */
 let CATEGORY_MAP = {
-  "AI & Emerging Technology": ["AI Applications","Agent & Automation Tools"],
-  "Business Analysis & Operations": ["Business Analysis","Process Analysis","Operations & Process"],
-  "Business Systems & Automation": ["CRM","Platforms & Automation"],
-  "Data & Analytics": ["Analysis & Reporting","Programming & Querying","Visualization & BI"],
-  "Project & Program Management": ["Planning & Delivery","Stakeholder Management"],
-  "Financial Services & Mortgage": ["Compliance & Regulatory","Client Services"],
-  "Sales & Client Relationships": ["Consultative Selling","Account Management"],
-  "Marketing & Digital Commerce": ["E-Commerce & Retail Operations","Content & Branding"],
+  "Software Engineering": ["Backend Development","Web Development","Internal Tools","Automated Testing"],
+  "Data & Databases": ["Data Pipelines","Relational Databases","Messaging Systems"],
+  "Cloud & Infrastructure": ["Cloud Infrastructure","Containerization","Cost Management"],
+  "Programming & APIs": ["Python","JavaScript","API Design"],
+  "Leadership": ["Technical Leadership"],
 };
 const TRACKER_TYPES = ["—","W2","Contract","Contract-to-hire","1099 / Independent contractor","C2C","Temporary","Part-time","Seasonal","Freelance / consulting","Internship"];
 let SOURCES = ["—","LinkedIn","Referral","Recruiter","Direct","Indeed","Company website","Networking","Job fair","Other"];
 const RESUME_REPOSITORY = [
-  "Avery Morgan — General Sales Résumé.pdf",
-  "Avery Morgan — Enterprise Account Executive — BeaconFlow Analytics.pdf",
-  "Avery Morgan — Regional Sales Manager — SummitWorks Solutions.pdf",
+  "Jordan Seeker — Software Engineering Résumé.pdf",
+  "Jordan Seeker — Staff Software Engineer — Brightline Software.pdf",
 ];
 
 let SKILLS = [
-  {id:"SK-101", cat:"Sales & Client Relationships", sub:"Consultative Selling", name:"Consultative Selling", prof:"Experienced",
-   evidence:"Led discovery conversations with operations and finance leaders, connected business needs to solution capabilities, and consistently advanced qualified opportunities.",
-   keywords:["consultative selling","solution selling","needs analysis","discovery"], claim:"Used consultative discovery to align solutions with customer needs and advance qualified opportunities.", note:""},
-  {id:"SK-102", cat:"Sales & Client Relationships", sub:"Consultative Selling", name:"B2B Sales", prof:"Experienced",
-   evidence:"Managed a full B2B sales cycle from prospecting and discovery through proposal, negotiation, close, and handoff.",
-   keywords:["b2b sales","full sales cycle","business development","quota attainment"], claim:"Managed full-cycle B2B opportunities from prospecting through close.", note:""},
-  {id:"SK-103", cat:"Sales & Client Relationships", sub:"Account Management", name:"Account Management", prof:"Experienced",
-   evidence:"Managed a portfolio of mid-market accounts, conducted quarterly business reviews, and identified renewal and expansion opportunities.",
-   keywords:["account management","customer retention","renewals","upselling"], claim:"Managed customer relationships, renewals, and account-growth opportunities.", note:""},
-  {id:"SK-104", cat:"Business Systems & Automation", sub:"CRM", name:"CRM Pipeline Management", prof:"Experienced",
-   evidence:"Maintained opportunity stages, activities, next steps, contacts, and forecast data in a CRM across an active regional pipeline.",
-   keywords:["crm","pipeline management","salesforce","opportunity management"], claim:"Maintained accurate CRM and pipeline data to support follow-up and forecasting.", note:"Fictional demo evidence; Salesforce represents a common sales workflow."},
-  {id:"SK-105", cat:"Data & Analytics", sub:"Analysis & Reporting", name:"Sales Forecasting", prof:"Working Knowledge",
-   evidence:"Reviewed stage, probability, deal value, and close-date data to prepare weekly forecasts and flag pipeline risk.",
-   keywords:["sales forecasting","pipeline analysis","revenue forecasting","sales reporting"], claim:"Used pipeline data to prepare forecasts and identify revenue risk.", note:""},
-  {id:"SK-106", cat:"Sales & Client Relationships", sub:"Consultative Selling", name:"Negotiation & Closing", prof:"Experienced",
-   evidence:"Negotiated commercial terms, addressed objections, coordinated approvals, and closed new and expansion business.",
-   keywords:["negotiation","closing","objection handling","commercial terms"], claim:"Negotiated terms, resolved objections, and closed new and expansion business.", note:""},
-  {id:"SK-107", cat:"Sales & Client Relationships", sub:"Account Management", name:"Customer Relationship Management", prof:"Experienced",
-   evidence:"Built multithreaded relationships with customer champions, end users, and decision-makers throughout the customer lifecycle.",
-   keywords:["relationship management","customer engagement","stakeholder management","customer lifecycle"], claim:"Built and maintained customer relationships across users, champions, and decision-makers.", note:""},
-  {id:"SK-108", cat:"Project & Program Management", sub:"Stakeholder Management", name:"Sales Presentations & Demos", prof:"Experienced",
-   evidence:"Delivered tailored presentations and product demonstrations for buying groups with different operational and financial priorities.",
-   keywords:["sales presentations","product demonstrations","executive presentations","storytelling"], claim:"Delivered tailored presentations and demonstrations to cross-functional buying groups.", note:""},
+  {id:"SK-015",cat:"Software Engineering",sub:"Internal Tools",name:"Internal Tooling Development",prof:"Intermediate",evidence:"Wrote internal tooling in Python and JavaScript for the QA team at Redfern Labs.",keywords:["internal tools","tooling","python","javascript"],claim:"Built internal tools in Python and JavaScript to support QA workflows.",note:""},
+  {id:"SK-014",cat:"Data & Databases",sub:"Data Pipelines",name:"Data Pipeline Engineering",prof:"Advanced",evidence:"Built the ingest pipeline that processed 40M events per day using Python, Kafka, and Postgres at Halcyon Data.",keywords:["data pipelines","etl","python","kafka","postgres"],claim:"Built high-volume data pipelines processing 40M events per day.",note:""},
+  {id:"SK-013",cat:"Cloud & Infrastructure",sub:"Cost Management",name:"Cloud Cost Optimization",prof:"Advanced",evidence:"Reduced monthly cloud spend by 23% through workload profiling, storage policies, and right-sizing.",keywords:["cloud cost optimization","aws","finops","right-sizing"],claim:"Reduced cloud spend through workload analysis and right-sizing.",note:""},
+  {id:"SK-012",cat:"Software Engineering",sub:"Backend Development",name:"Backend Development",prof:"Advanced",evidence:"Designed and maintained backend services supporting customer-facing workflows and event processing.",keywords:["backend development","distributed systems","microservices","system design"],claim:"Designed and maintained reliable backend services.",note:""},
+  {id:"SK-011",cat:"Software Engineering",sub:"Web Development",name:"Web Development",prof:"Intermediate",evidence:"Delivered accessible web interfaces and integrated them with documented APIs.",keywords:["web development","html","css","accessibility"],claim:"Built accessible web interfaces integrated with backend APIs.",note:""},
+  {id:"SK-010",cat:"Data & Databases",sub:"Relational Databases",name:"Relational Databases",prof:"Advanced",evidence:"Modeled transactional data and tuned complex PostgreSQL queries for production workloads.",keywords:["relational databases","postgresql","sql","data modeling"],claim:"Designed relational data models and optimized production queries.",note:""},
+  {id:"SK-009",cat:"Data & Databases",sub:"Messaging Systems",name:"Messaging Systems",prof:"Advanced",evidence:"Built asynchronous event workflows using Kafka with retry, monitoring, and recovery patterns.",keywords:["messaging systems","kafka","event-driven architecture","queues"],claim:"Implemented resilient event-driven workflows with Kafka.",note:""},
+  {id:"SK-008",cat:"Cloud & Infrastructure",sub:"Cloud Infrastructure",name:"Cloud Infrastructure",prof:"Intermediate",evidence:"Deployed and supported services on AWS using infrastructure-as-code and operational dashboards.",keywords:["cloud infrastructure","aws","infrastructure as code","monitoring"],claim:"Deployed and supported cloud services on AWS.",note:""},
+  {id:"SK-007",cat:"Cloud & Infrastructure",sub:"Containerization",name:"Containerization",prof:"Intermediate",evidence:"Containerized development and production services using Docker.",keywords:["containerization","docker","containers","deployment"],claim:"Containerized services with Docker for consistent delivery.",note:""},
+  {id:"SK-006",cat:"Programming & APIs",sub:"API Design",name:"API Design",prof:"Advanced",evidence:"Designed versioned REST APIs with clear contracts, validation, and error handling.",keywords:["api design","rest","service contracts","openapi"],claim:"Designed versioned REST APIs with clear service contracts.",note:""},
+  {id:"SK-005",cat:"Programming & APIs",sub:"Python",name:"Python",prof:"Advanced",evidence:"Used Python for production services, data pipelines, testing, and developer tooling.",keywords:["python","backend","automation","data engineering"],claim:"Developed production services and tooling in Python.",note:""},
+  {id:"SK-004",cat:"Programming & APIs",sub:"JavaScript",name:"JavaScript",prof:"Intermediate",evidence:"Built interactive web features and internal tools using modern JavaScript.",keywords:["javascript","frontend","web applications","tooling"],claim:"Built interactive web features with JavaScript.",note:""},
+  {id:"SK-003",cat:"Data & Databases",sub:"Relational Databases",name:"PostgreSQL",prof:"Advanced",evidence:"Designed schemas, wrote complex queries, and improved database performance in PostgreSQL.",keywords:["postgresql","sql","query optimization","schema design"],claim:"Designed and optimized PostgreSQL databases.",note:""},
+  {id:"SK-002",cat:"Leadership",sub:"Technical Leadership",name:"Technical Leadership",prof:"Intermediate",evidence:"Led design reviews, mentored engineers, and coordinated delivery across product and platform teams.",keywords:["technical leadership","mentoring","design reviews","cross-functional collaboration"],claim:"Led technical design reviews and mentored engineers.",note:""},
+  {id:"SK-001",cat:"Software Engineering",sub:"Automated Testing",name:"Automated Testing",prof:"Intermediate",evidence:"Created unit, integration, and regression tests for backend services and internal tools.",keywords:["automated testing","unit testing","integration testing","quality assurance"],claim:"Built automated test coverage for services and tools.",note:""},
 ];
 
 const RESUME_SUGGESTIONS = [
-  {id:"SK-109", cat:"Sales & Client Relationships", sub:"Consultative Selling", name:"Prospecting & Lead Qualification", prof:"Experienced",
-   evidence:"Built targeted prospect lists, conducted multichannel outreach, and qualified opportunities against business need, timing, and buying process.",
-   keywords:["prospecting","lead qualification","outbound sales","pipeline generation"], claim:"Prospected and qualified new B2B opportunities through targeted outreach.", note:"Simulated résumé-upload suggestion."},
-  {id:"SK-110", cat:"Sales & Client Relationships", sub:"Account Management", name:"Territory Planning", prof:"Working Knowledge",
-   evidence:"Prioritized accounts by fit, whitespace, renewal timing, and expansion potential to focus weekly sales activity.",
-   keywords:["territory planning","account segmentation","sales strategy"], claim:"Prioritized accounts and sales activity through structured territory planning.", note:"Simulated résumé-upload suggestion."},
+  {id:"SK-016",cat:"Cloud & Infrastructure",sub:"Cloud Infrastructure",name:"Infrastructure as Code",prof:"Intermediate",evidence:"Maintained reusable infrastructure definitions for AWS environments.",keywords:["infrastructure as code","terraform","aws"],claim:"Maintained reusable infrastructure definitions for AWS.",note:"Simulated résumé-upload suggestion."},
+  {id:"SK-017",cat:"Software Engineering",sub:"Backend Development",name:"Observability",prof:"Intermediate",evidence:"Added service metrics, structured logs, and alerting for production systems.",keywords:["observability","monitoring","logging","alerting"],claim:"Implemented production monitoring, logging, and alerting.",note:"Simulated résumé-upload suggestion."},
 ];
 
 const JOB_HISTORY_SUGGESTIONS = [
-  {title:"Sales Associate", company:"Harbor & Pine Retail", location:"Columbus, OH", startDate:"08/2016", endDate:"06/2018", current:false,
-   bullets:["Advised customers on product selection and consistently exceeded monthly attachment-rate goals.","Supported merchandising, inventory counts, and customer follow-up."]},
+  {title:"Software Engineering Intern",company:"Northline Digital",location:"Kansas City, MO",startDate:"05/2017",endDate:"08/2017",current:false,
+   bullets:["Built internal reporting tools and added automated tests for customer-facing services.","Documented API behavior and supported defect triage."]},
 ];
 
-const SAMPLE_JD = `Senior Account Executive
-Meridian Growth Software — Remote
+const SAMPLE_JD = `Staff Software Engineer
+Brightline Software — Remote (US) — Full-time
 
 About the role
-Meridian Growth Software is seeking a Senior Account Executive to help growing organizations improve their sales operations. This person will own a full B2B sales cycle, build trusted customer relationships, and partner with solution consultants and customer success to deliver a thoughtful buying experience. The ideal candidate combines consultative selling, disciplined pipeline management, and clear communication with a consistent record of quota attainment.
+We're hiring a Staff Software Engineer to set technical direction for our platform team, own our most complex systems, and level up engineers around you. You will partner with product and infrastructure teams to build reliable services used by growing businesses.
 
-Key responsibilities
-• Prospect into target accounts and lead discovery conversations with business and operations leaders.
-• Manage opportunities from qualification through product demonstrations, proposal, negotiation, and closing.
-• Maintain accurate CRM records, next steps, opportunity stages, and close dates.
-• Prepare weekly sales forecasting updates and identify pipeline risk early.
-• Develop account plans that support renewals, account management, and expansion opportunities.
-• Collaborate with marketing, solution consulting, implementation, and customer success teams.
+Responsibilities
+• Lead architecture and design for scalable backend services and data pipelines.
+• Build production systems in Python and PostgreSQL with event-driven components.
+• Improve reliability, observability, automated testing, and cloud efficiency.
+• Mentor engineers and facilitate technical design reviews.
+• Partner with product managers to translate ambiguous needs into pragmatic solutions.
 
 Required qualifications
-• 5+ years of B2B sales experience with responsibility for a full sales cycle.
-• Demonstrated success in consultative selling, negotiation, and quota attainment.
-• Hands-on experience with CRM and pipeline management.
-• Strong presentation, written communication, and stakeholder collaboration skills.
-• Ability to translate customer needs into clear business outcomes.
+• 7+ years of software engineering experience, including backend development.
+• Advanced Python, SQL, PostgreSQL, API design, and distributed-systems experience.
+• Experience with AWS, Docker, automated testing, and production monitoring.
+• Strong technical leadership and cross-functional communication skills.
 
 Preferred qualifications
-• Experience selling SaaS or business software solutions.
-• Experience leading product demonstrations for cross-functional buying groups.
-• Familiarity with sales forecasting and account management practices.
-• Bachelor's degree in business, marketing, or a related field.
-• HubSpot Sales Software Certification or comparable sales training.`;
+• Experience with Kafka or another messaging platform.
+• Experience optimizing cloud infrastructure and developer tooling.
+• Bachelor's degree in computer science or a related field.
+• AWS certification.`;
 let EDUCATION = [
-  {id:1, degree:"Bachelor of Business Administration in Marketing", school:"Midwest State University", year:"2018"}
+  {id:1,degree:"Bachelor of Science in Computer Science",school:"State University",year:"2018"}
 ];
 let CERTIFICATIONS = [
-  {id:1, name:"HubSpot Sales Software Certification", issuer:"HubSpot Academy", year:"2024"},
-  {id:2, name:"Certified Professional Sales Person (CPSP)", issuer:"National Association of Sales Professionals", year:"2023"}
+  {id:1,name:"AWS Certified Developer – Associate",issuer:"Amazon Web Services",year:"2025"}
 ];
 const SOCIAL_PLATFORMS = ["LinkedIn","GitHub","Twitter / X","Instagram","Behance","Medium","Other"];
 const MONTH_NAMES = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
@@ -598,30 +629,30 @@ function insertJobSorted(list, job){
 
 let trackerIdCounter = 3;
 let TRACKER = [
-  {id:1, dateApplied:"2026-08-20", role:"Enterprise Account Executive", company:"BeaconFlow Analytics", type:"W2", source:"LinkedIn", status:"Applied", score:88, resumeFile:"Avery Morgan — Enterprise Account Executive — BeaconFlow Analytics.pdf", postingLink:"", notes:[]},
-  {id:2, dateApplied:"2026-08-12", role:"Regional Sales Manager", company:"SummitWorks Solutions", type:"W2", source:"Recruiter", status:"Interview", score:82, resumeFile:"Avery Morgan — Regional Sales Manager — SummitWorks Solutions.pdf", postingLink:"", notes:[{date:"08/18/26 2:30 PM", text:"Completed first-round interview; panel interview requested."}]},
-  {id:3, dateApplied:"2026-07-29", role:"Senior Account Executive", company:"AxisPoint CRM", type:"W2", source:"Referral", status:"No response", score:79, resumeFile:"Avery Morgan — General Sales Résumé.pdf", postingLink:"", notes:[]},
+  {id:1,dateApplied:"2026-09-07",role:"IT Project Manager",company:"Netflix",type:"—",source:"—",status:"Interview",score:0,resumeFile:"",postingLink:"",notes:[{date:"09/07/26 10:00 AM",text:"Interview scheduled for September 10 at 10:00 AM."}]},
+  {id:2,dateApplied:"2026-08-21",role:"Software Engineer",company:"Cerner",type:"—",source:"—",status:"Applied",score:0,resumeFile:"",postingLink:"",notes:[]},
+  {id:3,dateApplied:"2026-08-21",role:"Software Engineer",company:"T-Mobile",type:"—",source:"—",status:"Applied",score:0,resumeFile:"",postingLink:"",notes:[]},
 ];
 
 let jobHistoryIdCounter = 3;
 let JOB_HISTORY = [
-  {id:1, title:"Senior Account Executive", company:"Northstar Revenue Systems", location:"Columbus, OH", startDate:"03/2023", endDate:"", current:true,
-   bullets:["Managed a $1.4M mid-market pipeline and finished 2025 at 118% of annual quota.","Led discovery, demonstrations, proposals, negotiation, and handoff for new and expansion business.","Improved forecast accuracy by maintaining clear opportunity stages, next steps, and close-date assumptions in the CRM."], source:"manual"},
-  {id:2, title:"Account Executive", company:"BrightPath Business Services", location:"Columbus, OH", startDate:"06/2020", endDate:"02/2023", current:false,
-   bullets:["Managed the full sales cycle for small and midsize business accounts across a multi-state territory.","Achieved 110% of quota in 2022 and expanded existing-account revenue through structured business reviews.","Partnered with implementation and customer-success teams to improve post-sale handoffs and retention."], source:"manual"},
-  {id:3, title:"Sales Development Representative", company:"Ridgeway Software Group", location:"Columbus, OH", startDate:"07/2018", endDate:"05/2020", current:false,
-   bullets:["Generated qualified opportunities through targeted email, phone, and LinkedIn outreach.","Averaged 55 qualified meetings per quarter and ranked in the top 15% of the SDR team in 2019.","Documented prospect needs, buying roles, and next steps in the CRM before account-executive handoff."], source:"manual"},
+  {id:1,title:"Senior Software Engineer",company:"Halcyon Data",location:"Kansas City, MO",startDate:"03/2023",endDate:"",current:true,
+   bullets:["Built an event-ingestion pipeline processing 40M events per day using Python, Kafka, and PostgreSQL.","Reduced monthly cloud spend by 23% through workload profiling and right-sizing.","Led design reviews and mentored engineers across the platform team."],source:"manual"},
+  {id:2,title:"Software Engineer",company:"Redfern Labs",location:"Kansas City, MO",startDate:"06/2020",endDate:"02/2023",current:false,
+   bullets:["Developed backend services and documented REST APIs for customer-facing products.","Built Python and JavaScript tools that shortened QA regression setup.","Expanded automated test coverage and improved release reliability."],source:"manual"},
+  {id:3,title:"Junior Software Developer",company:"Northline Digital",location:"Kansas City, MO",startDate:"07/2018",endDate:"05/2020",current:false,
+   bullets:["Built accessible web features and integrated them with backend services.","Wrote SQL queries and supported PostgreSQL schema changes.","Investigated defects and documented reusable fixes for the engineering team."],source:"manual"},
 ];
 
 let PROFILE = {
-  name: "Avery Morgan",
+  name: "Jordan Seeker",
   photo: "",
   fields: {
-    email:    {value:"avery.morgan@example.com", include:true,  label:"Email", placeholder:"you@email.com"},
-    phone:    {value:"(614) 555-0148", include:true, label:"Phone", placeholder:"(555) 555-5555"},
-    location: {value:"Columbus, OH", include:true, label:"Location", placeholder:"City, State"},
+    email:    {value:"jordan.seeker@example.com", include:true,  label:"Email", placeholder:"you@email.com"},
+    phone:    {value:"(816) 555-0142", include:true, label:"Phone", placeholder:"(555) 555-5555"},
+    location: {value:"Kansas City, MO", include:true, label:"Location", placeholder:"City, State"},
   },
-  socials: [ {platform:"LinkedIn", value:"linkedin.com/in/avery-morgan-demo", include:true} ],
+  socials: [ {platform:"LinkedIn", value:"linkedin.com/in/jordan-seeker", include:true}, {platform:"GitHub", value:"github.com/jseeker", include:true} ],
   websites: [],
 };
 
@@ -657,27 +688,39 @@ document.querySelectorAll("[data-goto]").forEach(el=>el.addEventListener("click"
 
 /* ---------------- Dashboard ---------------- */
 function renderRecent(){
-  document.getElementById("dash-recent").innerHTML = TRACKER.slice(0,3).map(r=>`
-    <div class="list-row"><div><div class="role">${r.role}</div><div class="company">${r.company}</div></div>
-    <span class="badge ${r.score>=80?'badge-good':'badge-warn'}">${r.score}%</span></div>`).join("") || `<div class="empty-hint">No applications added yet.</div>`;
+  renderDashboard();
 }
 function renderDashboardSkillCount(){
-  const count = SKILLS.length;
-  document.getElementById("dash-skill-count").textContent = `${count} confirmed ${count===1?"skill is":"skills are"} loaded with evidence and ATS keywords.`;
+  renderDashboard();
 }
 function jumpToTracker(id){ goto("tracker"); expandedTrackerId = id; renderTracker(); }
 function renderFollowUps(){
-  const FOLLOWUP_DAYS = 7;
-  const stale = TRACKER.filter(r=>r.status==="Applied" && daysSince(r.dateApplied)>=FOLLOWUP_DAYS)
-                        .sort((a,b)=>daysSince(b.dateApplied)-daysSince(a.dateApplied));
-  const section = document.getElementById("followup-section");
-  if(!stale.length){ section.style.display = "none"; return; }
-  section.style.display = "block";
-  document.getElementById("dash-followup").innerHTML = stale.map(r=>`
-    <div class="list-row" style="cursor:pointer;" onclick="jumpToTracker(${r.id})">
-      <div><div class="role">${r.role}</div><div class="company">${r.company}</div></div>
-      <span class="badge badge-warn">${daysSince(r.dateApplied)}d, no response</span>
-    </div>`).join("");
+  renderDashboard();
+}
+function renderDashboard(){
+  const active = TRACKER.filter(r=>!["Rejected","Withdrawn"].includes(r.status)).length;
+  const interviewing = TRACKER.filter(r=>r.status==="Interview").length;
+  const offers = TRACKER.filter(r=>r.status==="Offer").length;
+  const waiting = TRACKER.filter(r=>r.status==="No response").length;
+  const setText = (id,value)=>{ const el=document.getElementById(id); if(el) el.textContent=value; };
+  setText("dash-active",active); setText("dash-interviews",interviewing); setText("dash-offers",offers); setText("dash-waiting",waiting);
+  setText("dash-skill-count",`${SKILLS.length} confirmed`);
+
+  const skillGroups = [
+    ["Backend Development",2,"advanced"],["Web Development",1,"mid"],["Relational Databases",1,"advanced"],
+    ["Messaging Systems",1,"advanced"],["Cloud Infrastructure",1,"advanced"],["Containerization",1,"mid"],["Other",8,"light"]
+  ];
+  const skillChart = document.getElementById("dash-skill-chart");
+  if(skillChart) skillChart.innerHTML = skillGroups.map(([label,count,tone])=>`
+    <div class="metric-row"><span>${label}</span><span class="metric-bar"><span class="metric-fill ${tone}" style="display:block;width:${Math.max(18,count/8*100)}%"></span></span><span class="metric-count">${count}</span></div>`).join("") +
+    `<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:18px;"><div class="card" style="padding:12px;"><strong style="font:600 20px var(--font-display);">${SKILLS.length} / ${SKILLS.length}</strong><div class="stat-detail">skills with evidence attached</div></div><div class="card" style="padding:12px;"><strong style="font:600 20px var(--font-display);">11 · 4</strong><div class="stat-detail">current · past skills</div></div></div>`;
+
+  const statuses = ["Applied","Interview","Offer","Rejected","No response","Withdrawn"];
+  const pipeline = document.getElementById("dash-pipeline");
+  if(pipeline) pipeline.innerHTML = statuses.map(status=>{
+    const count=TRACKER.filter(r=>r.status===status).length;
+    return `<div class="pipeline-row"><span>${status}</span><span class="metric-bar"><span class="metric-fill" style="display:block;width:${count?Math.max(18,count/3*100):0}%"></span></span><span class="metric-count">${count}</span></div>`;
+  }).join("");
 }
 
 /* ---------------- Profile ---------------- */
@@ -920,8 +963,8 @@ function refreshTailorIfActive(){
 }
 
 /* ---------------- Inventory ---------------- */
-function profClass(p){ return p==="Experienced" ? "prof-Experienced" : "prof-Foundational"; }
-const PROF_HELP = "Foundational: exposure through coursework or limited practice. Working Knowledge: comfortable applying this with occasional guidance. Experienced: applied this independently and repeatedly in real work.";
+function profClass(p){ return `prof-${p.replace(/\s+/g,"-")}`; }
+const PROF_HELP = "Beginner: foundational familiarity. Intermediate: can work independently in common situations. Advanced: demonstrated repeatedly in complex work.";
 const EVIDENCE_HELP = "A real example of when you used this — this is what makes the skill resume-safe.";
 const KEYWORDS_HELP = "Alternate terms a recruiter or ATS might search for. This will eventually be AI-suggested — for now, add your own, separated by commas.";
 const NOTES_HELP = "Any honest caveat that keeps this skill from being overstated — e.g. 'still learning,' 'coursework only,' or 'don't imply team leadership.'";
@@ -929,13 +972,13 @@ const NOTES_HELP = "Any honest caveat that keeps this skill from being overstate
 function skillEditForm(s){
   const isNew = !s;
   const cats = Object.keys(CATEGORY_MAP);
-  s = s || {id:"", cat:cats[0]||"", sub:(CATEGORY_MAP[cats[0]]||[])[0]||"", name:"", prof:"Working Knowledge", evidence:"", keywords:[], claim:"", note:""};
+  s = s || {id:"", cat:cats[0]||"", sub:(CATEGORY_MAP[cats[0]]||[])[0]||"", name:"", prof:"Intermediate", evidence:"", keywords:[], claim:"", note:""};
   return `
     <div class="panel">
       <div class="field-grid">
         <div>${flabel("Skill name")}<input class="field-input" id="f-name" value="${s.name}"></div>
         <div>${flabel("Proficiency", PROF_HELP)}
-          <select class="field-input" id="f-prof">${["Foundational","Working Knowledge","Experienced"].map(p=>`<option ${s.prof===p?"selected":""}>${p}</option>`).join("")}</select></div>
+          <select class="field-input" id="f-prof">${["Beginner","Intermediate","Advanced"].map(p=>`<option ${s.prof===p?"selected":""}>${p}</option>`).join("")}</select></div>
         <div>${flabel("Category")}${categorySelect(s.cat)}</div>
         <div>${flabel("Subcategory")}${subcategorySelect(s.cat, s.sub)}</div>
       </div>
@@ -1314,23 +1357,12 @@ document.getElementById("add-certification-btn").addEventListener("click", ()=>{
 });
 
 /* ---------------- Tailor ---------------- */
-document.getElementById("fetch-link-btn").addEventListener("click", async ()=>{
+document.getElementById("fetch-link-btn").addEventListener("click", ()=>{
   const url = document.getElementById("jd-link").value.trim();
   const statusEl = document.getElementById("fetch-status");
   if(!url){ statusEl.textContent = "Paste a link first."; return; }
-  statusEl.textContent = "Fetching…";
-  try{
-    const res = await fetch(url);
-    if(!res.ok) throw new Error("bad status");
-    const html = await res.text();
-    const text = new DOMParser().parseFromString(html, "text/html").body.innerText.trim();
-    if(!text) throw new Error("empty");
-    document.getElementById("jd-input").value = text.slice(0, 6000);
-    statusEl.textContent = "Pulled the posting text below — check it over, then click Analyze.";
-  }catch(err){
-    statusEl.textContent = "Couldn't pull this posting automatically (most job sites block that from a browser). Paste the text into the box below instead.";
-    document.getElementById("jd-input").focus();
-  }
+  statusEl.textContent = "Link fetching is not connected in this public prototype. Use the sample posting or paste description text below.";
+  document.getElementById("jd-input").focus();
 });
 let jdDebounceTimer;
 document.getElementById("jd-input").addEventListener("input", ()=>{
@@ -1809,6 +1841,29 @@ document.getElementById("tr-add").addEventListener("click", ()=>{
   document.getElementById("tr-source").value = "";
   document.getElementById("tr-date").value = todayISO();
   renderTracker(); renderRecent(); renderFollowUps();
+});
+
+/* ---------------- Ask Maeve (simulated) ---------------- */
+const MAEVE_RESPONSES = {
+  "Which skills are strongest for a backend role?":"Your strongest demonstrated matches are backend development, Python, PostgreSQL, API design, data pipelines, and messaging systems. Each is supported by fictional evidence in this demo inventory.",
+  "What should I focus on next?":"The sample profile would benefit most from deeper cloud architecture evidence and another leadership example. In the real product, suggestions would still require the user to review and confirm them.",
+  "Summarize my application pipeline.":"You have three active applications: one interview and two applications awaiting their next update. Open Job tracker to review the fictional entries."
+};
+function askMaeve(question){
+  const response = document.getElementById("maeve-response");
+  response.innerHTML = `<div class="analysis-working"><span class="analysis-spinner"></span><span><strong>Reviewing the demo record…</strong><br>This response is simulated.</span></div>`;
+  setTimeout(()=>{ response.textContent = MAEVE_RESPONSES[question] || "This public prototype demonstrates the conversation flow only. The production assistant would use the user's confirmed career record, but no AI service is connected here."; },700);
+}
+document.querySelectorAll("[data-maeve-question]").forEach(button=>button.addEventListener("click",()=>{
+  document.getElementById("maeve-input").value=button.dataset.maeveQuestion;
+  askMaeve(button.dataset.maeveQuestion);
+}));
+document.getElementById("maeve-send").addEventListener("click",()=>{
+  const question=document.getElementById("maeve-input").value.trim();
+  if(question) askMaeve(question);
+});
+document.getElementById("maeve-input").addEventListener("keydown",event=>{
+  if(event.key==="Enter"){ event.preventDefault(); document.getElementById("maeve-send").click(); }
 });
 
 renderRecent(); renderInventory(); renderJobHistory(); renderEducation(); renderCertifications(); renderTracker(); renderProfile(); renderFollowUps();
