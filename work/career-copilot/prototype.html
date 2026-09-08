@@ -510,8 +510,6 @@
   <button data-view="profile">◐<br>Profile</button>
 </div>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-<script src="https://unpkg.com/docx@8.5.0/build/index.js"></script>
 <script>
 /* ---------------- Prototype configuration ---------------- */
 let CATEGORY_MAP = {
@@ -1457,8 +1455,9 @@ function analyze(text){
     </div>` : ""}
     <div class="dl-row">
       <button class="btn btn-sm btn-block" id="copy-btn">Copy resume text</button>
-      <button class="btn btn-sm btn-block" id="docx-btn">Download .docx</button>
-      <button class="btn btn-sm btn-block" id="pdf-btn">Download .pdf</button>
+      <button class="btn btn-sm btn-block" id="docx-btn" disabled title="File exports are not available in this public prototype">Download .docx — full product</button>
+      <button class="btn btn-sm btn-block" id="pdf-btn" disabled title="File exports are not available in this public prototype">Download .pdf — full product</button>
+      <div class="controls-sub" style="margin:2px 0 0;">Preview only — this demo does not generate or download files.</div>
     </div>
     <div class="add-tracker-box">
       <span class="field-label">Add to tracker</span>
@@ -1473,8 +1472,6 @@ function analyze(text){
     navigator.clipboard?.writeText(document.getElementById("resume-preview").innerText);
     const b = document.getElementById("copy-btn"); b.textContent = "Copied"; setTimeout(()=>b.textContent="Copy resume text", 1400);
   });
-  document.getElementById("docx-btn").addEventListener("click", downloadDocx);
-  document.getElementById("pdf-btn").addEventListener("click", downloadPdf);
   document.getElementById("at-add").addEventListener("click", ()=>{
     const role = document.getElementById("at-role").value.trim();
     const company = document.getElementById("at-company").value.trim();
@@ -1576,76 +1573,6 @@ document.getElementById("sample-btn").addEventListener("click", ()=>{
   input.focus();
   input.setSelectionRange(0, 0);
 });
-async function downloadDocx(){
-  try{
-    const { Document, Packer, Paragraph, TextRun, HeadingLevel } = docx;
-    const jobsToShow = JOB_HISTORY.filter(j=>includedJobIds.has(j.id));
-    const children = [
-      new Paragraph({ text: buildName(), heading: HeadingLevel.HEADING_1 }),
-      new Paragraph({ children: [new TextRun(buildContactLine())] }),
-      new Paragraph({ text: "Summary", heading: HeadingLevel.HEADING_2 }),
-      new Paragraph({ children: [new TextRun(lastSummaryText)] }),
-    ];
-    if(lastMatched.length){
-      children.push(new Paragraph({ text: "Skills", heading: HeadingLevel.HEADING_2 }));
-      children.push(new Paragraph({ children:[new TextRun(lastMatched.map(m=>m.name).join(", "))] }));
-    }
-    if(jobsToShow.length){
-      children.push(new Paragraph({ text: "Experience", heading: HeadingLevel.HEADING_2 }));
-      jobsToShow.forEach(j=>{
-        children.push(new Paragraph({ children:[new TextRun({text:`${j.title} — ${j.company}`, bold:true})] }));
-        children.push(new Paragraph({ children:[new TextRun({text:jobDateRange(j), italics:true})] }));
-        j.bullets.forEach(b=> children.push(new Paragraph({ text:b, bullet:{level:0} })));
-      });
-    }
-    children.push(new Paragraph({ text: "Education", heading: HeadingLevel.HEADING_2 }));
-    EDUCATION.forEach(e=>{
-      children.push(new Paragraph({ children:[new TextRun({text:e.degree, bold:true})] }));
-      children.push(new Paragraph({ children:[new TextRun(`${e.school} · ${e.year}`)] }));
-    });
-    children.push(new Paragraph({ text: "Certifications", heading: HeadingLevel.HEADING_2 }));
-    CERTIFICATIONS.forEach(c=>{
-      children.push(new Paragraph({ children:[new TextRun({text:c.name, bold:true})] }));
-      children.push(new Paragraph({ children:[new TextRun(`${c.issuer} · ${c.year}`)] }));
-    });
-    const doc = new Document({ sections: [{ properties: {}, children }] });
-    const blob = await Packer.toBlob(doc);
-    triggerDownload(blob, "resume.docx");
-  }catch(err){ alert("Couldn't generate the .docx right now: " + err.message); }
-}
-function downloadPdf(){
-  try{
-    const { jsPDF } = window.jspdf;
-    const doc = new jsPDF();
-    let y = 20;
-    const jobsToShow = JOB_HISTORY.filter(j=>includedJobIds.has(j.id));
-    doc.setFontSize(16); doc.text(buildName(), 14, y); y+=8;
-    doc.setFontSize(10); doc.text(buildContactLine(), 14, y); y+=10;
-    doc.setFontSize(12); doc.text("Summary", 14, y); y+=6;
-    doc.setFontSize(10);
-    const summaryLines = doc.splitTextToSize(lastSummaryText, 180); doc.text(summaryLines, 14, y); y += summaryLines.length*5+6;
-    if(lastMatched.length){
-      doc.setFontSize(12); doc.text("Skills", 14, y); y+=6; doc.setFontSize(10);
-      const skillsLine = doc.splitTextToSize(lastMatched.map(m=>m.name).join(", "), 180);
-      doc.text(skillsLine, 14, y); y += skillsLine.length*5+6;
-    }
-    if(jobsToShow.length){
-      doc.setFontSize(12); doc.text("Experience", 14, y); y+=6;
-      jobsToShow.forEach(j=>{
-        doc.setFontSize(10.5); doc.text(`${j.title} — ${j.company}`, 14, y); y+=5;
-        doc.setFontSize(9); doc.text(jobDateRange(j), 14, y); y+=5;
-        doc.setFontSize(10);
-        j.bullets.forEach(b=>{ const lines = doc.splitTextToSize("• "+b, 180); doc.text(lines, 14, y); y += lines.length*5+2; });
-        y += 3;
-      });
-    }
-    doc.setFontSize(12); doc.text("Education", 14, y); y+=6;
-    EDUCATION.forEach(e=>{ doc.setFontSize(10.5); doc.text(e.degree, 14, y); y+=5; doc.setFontSize(9); doc.text(`${e.school} · ${e.year}`, 14, y); y+=7; });
-    doc.setFontSize(12); doc.text("Certifications", 14, y); y+=6;
-    CERTIFICATIONS.forEach(c=>{ doc.setFontSize(10.5); doc.text(c.name, 14, y); y+=5; doc.setFontSize(9); doc.text(`${c.issuer} · ${c.year}`, 14, y); y+=7; });
-    doc.save("resume.pdf");
-  }catch(err){ alert("Couldn't generate the .pdf right now: " + err.message); }
-}
 function triggerDownload(blob, filename){
   const url = URL.createObjectURL(blob);
   const a = document.createElement("a"); a.href = url; a.download = filename;
