@@ -229,6 +229,70 @@
   .confirm-dialog h2{font-size:19px;margin-bottom:8px;}
   .confirm-dialog p{font-size:13px;line-height:1.55;color:var(--ink-muted);margin:0 0 20px;}
   .confirm-actions{display:flex;justify-content:flex-end;gap:8px;}
+
+  /* V2 portfolio edition: current visual language without production logic. */
+  .shell{display:block;min-height:100vh;}
+  .sidebar{width:100%;height:auto;min-height:55px;padding:0 22px;position:sticky;top:0;z-index:50;display:flex;flex-direction:row;align-items:center;gap:24px;overflow:visible;border-right:0;border-bottom:1px solid var(--line);}
+  .wordmark{margin:0;white-space:nowrap;font-size:17px;}
+  .tagline,.sidebar-foot{display:none;}
+  .nav{display:flex;flex:1;flex-direction:row;gap:2px;overflow-x:auto;scrollbar-width:none;}
+  .nav::-webkit-scrollbar{display:none;}
+  .nav-item{width:auto;padding:8px 11px;border:0;white-space:nowrap;font-size:12.5px;}
+  .nav-item svg{display:none;}
+  .nav-item.active{border:0;background:var(--ledger-soft);}
+  .main{min-height:calc(100vh - 55px);background-color:#EEF2F3;background-image:radial-gradient(#CCD4D8 0.75px,transparent 0.75px);background-size:16px 16px;}
+  .prototype-notice{max-width:1120px;margin:18px auto 0;background:#FFF8F0;border-color:#D7AC7C;}
+  .view{max-width:1120px;padding:26px 22px 100px;}
+  .view-head{align-items:flex-start;}
+  .view-head h1{font-size:24px;}
+  .dashboard-actions{display:flex;gap:8px;}
+  .dashboard-date{font:10px var(--font-mono);letter-spacing:.12em;text-transform:uppercase;color:var(--ink-faint);margin-bottom:4px;}
+  .dashboard-v2{display:grid;grid-template-columns:1fr 1.35fr 1fr;gap:14px;align-items:start;}
+  .dashboard-stack{display:flex;flex-direction:column;gap:12px;min-width:0;}
+  .zone-label{display:flex;justify-content:space-between;align-items:center;font:10px var(--font-mono);letter-spacing:.11em;text-transform:uppercase;color:#73808A;margin:0 2px -4px;}
+  .v2-card{background:rgba(255,255,255,.94);border:1px solid #CBD4D9;border-radius:7px;padding:15px;box-shadow:0 1px 0 rgba(28,35,33,.02);}
+  .v2-card h3{font-size:14px;margin-bottom:4px;}
+  .v2-card p{margin:0;color:var(--ink-muted);font-size:12px;line-height:1.5;}
+  .v2-card-accent{border-top:3px solid var(--flag);}
+  .v2-card-actions{display:flex;gap:7px;margin-top:12px;flex-wrap:wrap;}
+  .v2-record{background:#1F2D46;color:#F7FAFA;border-color:#1F2D46;}
+  .v2-record .record-score{font:600 28px var(--font-display);color:#73D0BD;}
+  .v2-record .record-score small{font:400 11px var(--font-body);color:#C5D0DC;}
+  .v2-record p,.v2-record .stat-detail{color:#C5D0DC;}
+  .record-bar{height:6px;background:#31415E;border-radius:20px;overflow:hidden;margin:9px 0 10px;}
+  .record-bar span{display:block;width:78%;height:100%;background:#73D0BD;}
+  .setup-row{display:flex;gap:8px;align-items:flex-start;font-size:12px;color:var(--ink-muted);padding:5px 0;}
+  .setup-mark{width:16px;height:16px;border-radius:50%;display:grid;place-items:center;flex:0 0 auto;border:1px solid var(--line);font-size:10px;}
+  .setup-row.done .setup-mark{background:var(--ledger);border-color:var(--ledger);color:white;}
+  .dash-mini-link{display:inline-block;margin-top:10px;color:var(--ledger);font-size:11.5px;text-decoration:none;}
+  .dash-mini-link:hover{text-decoration:underline;}
+  .suggestion-meta{font:10px var(--font-mono);text-transform:uppercase;letter-spacing:.06em;color:var(--ink-faint);margin-bottom:7px;}
+  .attention-card{border-left:3px solid var(--flag);}
+  .try-list{display:grid;gap:9px;margin-top:10px;}
+  .try-item{display:flex;justify-content:space-between;gap:12px;align-items:center;border-top:1px solid var(--line);padding-top:9px;font-size:12px;}
+  .try-item:first-child{border-top:0;padding-top:0;}
+  .try-item button{border:0;background:none;padding:0;color:var(--ledger);font:500 11.5px var(--font-body);}
+  .dashboard-v2 .metric-row{grid-template-columns:1fr 70px 20px;font-size:11.5px;margin:7px 0;}
+  .dashboard-v2 .pipeline-row{font-size:11.5px;margin:7px 0;}
+
+  .tailor-steps{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:-4px 0 18px;}
+  .tailor-step{display:flex;align-items:center;gap:8px;padding:9px 11px;background:rgba(255,255,255,.72);border:1px solid var(--line);border-radius:6px;color:var(--ink-faint);font-size:11.5px;}
+  .tailor-step span{display:grid;place-items:center;width:20px;height:20px;border-radius:50%;border:1px solid var(--line);font:10px var(--font-mono);}
+  .tailor-step.active{background:var(--ledger-soft);border-color:#AFCFC5;color:var(--ledger-ink);font-weight:600;}
+  .tailor-step.active span{background:var(--ledger);border-color:var(--ledger);color:white;}
+  .requirements-review{display:none;background:var(--raised);border:1px solid var(--line);border-radius:8px;margin-top:16px;overflow:hidden;}
+  .requirements-head{display:flex;justify-content:space-between;gap:16px;align-items:center;padding:16px 18px;border-bottom:1px solid var(--line);}
+  .requirements-head h3{font-size:15px;}
+  .requirements-head p{font-size:11.5px;color:var(--ink-muted);margin:2px 0 0;}
+  .requirement-row{display:grid;grid-template-columns:1fr 88px 160px;gap:14px;align-items:center;padding:11px 18px;border-bottom:1px solid var(--line);font-size:12px;}
+  .requirement-row:last-of-type{border-bottom:0;}
+  .requirement-source{color:var(--ink-muted);font-size:11px;}
+  .requirement-status{font-weight:500;}
+  .requirement-status.backed{color:var(--ledger);}
+  .requirement-status.thin{color:var(--flag);}
+  .requirement-status.missing{color:#A54B39;}
+  .requirements-foot{display:flex;justify-content:space-between;align-items:center;gap:14px;padding:13px 18px;background:#F8FAF9;}
+  .requirements-foot small{color:var(--ink-faint);font-size:10.5px;}
   @media (max-width:760px){
     .sidebar{display:none;}
     .prototype-notice{margin:14px 18px 0;}
@@ -251,6 +315,13 @@
     .tracker-table td::before{content:attr(data-label);display:inline-block;width:88px;font-size:10.5px;color:var(--ink-faint);text-transform:uppercase;letter-spacing:0.03em;}
     .note-entry-actions{opacity:.72;}
     .note-action{padding:2px 0;font-size:11px;}
+    .dashboard-v2{grid-template-columns:1fr;}
+    .dashboard-actions{width:100%;}
+    .dashboard-actions .btn{flex:1;justify-content:center;}
+    .tailor-steps{grid-template-columns:1fr;}
+    .requirement-row{grid-template-columns:1fr auto;}
+    .requirement-source{grid-column:1/-1;}
+    .requirements-head,.requirements-foot{align-items:flex-start;flex-direction:column;}
   }
 </style>
 </head>
@@ -273,32 +344,69 @@
   </div>
 
   <div class="main">
-    <div class="prototype-notice" role="note"><strong>Demo prototype:</strong> Jordan Seeker and all companies, applications, and résumé details shown here are fictional. Matching, assistant responses, and résumé-upload results are simulated; files are not parsed, uploaded, or stored. Changes reset when the page is refreshed.</div>
+    <div class="prototype-notice" role="note"><strong>Portfolio simulation:</strong> Jordan Seeker and all companies, applications, and résumé details shown here are fictional. Analysis, matching, suggestions, and Maeve responses are prewritten demonstrations—not the production intelligence behind VeriVault. Files are never parsed, uploaded, or stored, and changes reset when this page is refreshed.</div>
     <section class="view active" id="view-dashboard">
       <div class="view-head">
-        <div><h1>Good to see you, Job Seeker.</h1><div class="view-sub">Here's where things stand today.</div></div>
+        <div><div class="dashboard-date">Portfolio demo · September 2026</div><h1>Good to see you, Jordan.</h1><div class="view-sub">A current view of the fictional record, decisions, and job search.</div></div>
+        <div class="dashboard-actions"><button class="btn" data-goto="assistant">Ask Maeve</button><button class="btn btn-primary" data-goto="tailor">Tailor a résumé</button></div>
       </div>
-      <div class="stat-grid">
-        <div class="stat-card"><div class="stat-label"><span class="stat-dot"></span>Active applications</div><div class="stat-value" id="dash-active">3</div><div class="stat-detail">1 sent this week</div></div>
-        <div class="stat-card"><div class="stat-label"><span class="stat-dot blue"></span>Interviewing</div><div class="stat-value" id="dash-interviews">1</div><div class="stat-detail">next: Sep 10, 2026</div></div>
-        <div class="stat-card"><div class="stat-label"><span class="stat-dot"></span>Offers</div><div class="stat-value" id="dash-offers">0</div><div class="stat-detail">—</div></div>
-        <div class="stat-card"><div class="stat-label"><span class="stat-dot orange"></span>Waiting on a reply</div><div class="stat-value" id="dash-waiting">0</div><div class="stat-detail">everyone's replied</div></div>
-      </div>
-      <div class="dashboard-panel">
-        <h3>Today’s tasks</h3>
-        <div class="view-sub">Nothing needs your attention today. Tailor a résumé or add an application when you're ready.</div>
-      </div>
-      <div class="dashboard-columns">
-        <div class="dashboard-panel">
-          <h3>Your skills <span id="dash-skill-count" style="float:right;font:400 12px var(--font-body);color:var(--ink-faint);">15 confirmed</span></h3>
-          <div id="dash-skill-chart"></div>
+      <div class="dashboard-v2">
+        <div class="dashboard-stack">
+          <div class="zone-label"><span>Get set up</span><span>2 of 4</span></div>
+          <div class="v2-card">
+            <h3>Build your record, then tailor</h3>
+            <div class="setup-row done"><span class="setup-mark">✓</span><span>Add your career history</span></div>
+            <div class="setup-row done"><span class="setup-mark">✓</span><span>Confirm what is yours</span></div>
+            <div class="setup-row"><span class="setup-mark"></span><span>Let Maeve help find what is missing</span></div>
+            <div class="setup-row"><span class="setup-mark"></span><span>Tailor to a real posting</span></div>
+            <div class="v2-card-actions"><button class="btn btn-sm btn-primary" data-goto="assistant">Talk to Maeve</button><button class="btn btn-sm" data-goto="tailor">Try tailoring</button></div>
+          </div>
+          <div class="zone-label"><span>Your record</span><span>78%</span></div>
+          <div class="v2-card v2-record">
+            <div class="record-score">78% <small>evidence-backed</small></div>
+            <div class="record-bar"><span></span></div>
+            <p>9 strong · 4 with some evidence · 3 still need a story</p>
+            <a class="dash-mini-link" href="#" data-goto="inventory" onclick="event.preventDefault()">Open the inventory →</a>
+          </div>
+          <div class="zone-label"><span>Your skills</span><span id="dash-skill-count">15 confirmed</span></div>
+          <div class="v2-card"><div id="dash-skill-chart"></div></div>
         </div>
-        <div class="dashboard-panel">
-          <h3>Search pipeline</h3>
-          <div id="dash-pipeline"></div>
+
+        <div class="dashboard-stack">
+          <div class="zone-label"><span>Needs review</span><span id="demo-review-count">1</span></div>
+          <div class="v2-card v2-card-accent" id="demo-suggestion-card">
+            <div class="suggestion-meta">Suggested from the fictional résumé</div>
+            <h3>Production Monitoring</h3>
+            <p>Potential evidence: created operational dashboards and alerts for production services at Halcyon Data.</p>
+            <div class="v2-card-actions"><button class="btn btn-sm btn-primary" onclick="resolveDemoSuggestion('accept')">Accept</button><button class="btn btn-sm" onclick="resolveDemoSuggestion('reject')">Reject</button></div>
+          </div>
+          <div class="zone-label"><span>Needs your attention</span><span>1</span></div>
+          <div class="v2-card attention-card">
+            <h3>IT Project Manager interview</h3>
+            <p>Sep 10 · 10:00 AM. Review the role and add preparation notes before the conversation.</p>
+            <a class="dash-mini-link" href="#" onclick="event.preventDefault();jumpToTracker(1)">Open tracker entry →</a>
+          </div>
+          <div class="zone-label"><span>Job tracker</span><span>3 open</span></div>
+          <div class="v2-card"><div id="dash-pipeline"></div><a class="dash-mini-link" href="#" data-goto="tracker" onclick="event.preventDefault()">Open the tracker →</a></div>
+        </div>
+
+        <div class="dashboard-stack">
+          <div class="zone-label"><span>Explore the demo</span><span>3 steps</span></div>
+          <div class="v2-card">
+            <h3>A guided look at the experience</h3>
+            <p>This portfolio edition demonstrates user control and responsible AI patterns without exposing VeriVault’s production logic.</p>
+            <div class="try-list">
+              <div class="try-item"><span>Review evidence-backed skills</span><button data-goto="inventory">View skills →</button></div>
+              <div class="try-item"><span>Compare a posting to the record</span><button data-goto="tailor">Analyze →</button></div>
+              <div class="try-item"><span>Ask a scripted career question</span><button data-goto="assistant">Ask Maeve →</button></div>
+            </div>
+          </div>
+          <div class="v2-card">
+            <h3>Review before trust</h3>
+            <p>AI-assisted suggestions stay separate from the confirmed record until the person explicitly accepts them. The example above demonstrates that principle with prewritten data.</p>
+          </div>
         </div>
       </div>
-      <div class="confidence-note"><span class="confidence-icon">☼</span><span><strong>Confidence isn't a feeling you wait for.</strong>It's what happens when you see the evidence.</span></div>
     </section>
 
     <section class="view" id="view-inventory">
@@ -365,6 +473,11 @@
       <div class="view-head">
         <div><h1>Tailor a resume</h1><div class="view-sub">Matches against your inventory only — nothing is invented.</div></div>
       </div>
+      <div class="tailor-steps" aria-label="Resume tailoring steps">
+        <div class="tailor-step active" id="tailor-step-posting"><span>1</span>Paste the posting</div>
+        <div class="tailor-step" id="tailor-step-review"><span>2</span>Review the evidence</div>
+        <div class="tailor-step" id="tailor-step-draft"><span>3</span>Review the draft</div>
+      </div>
       <div class="link-row">
         <input type="url" id="jd-link" placeholder="Paste a job posting link…">
         <button class="btn btn-sm" id="fetch-link-btn">Fetch</button>
@@ -377,6 +490,7 @@
         <button class="btn btn-sm" id="sample-btn">Use sample posting</button>
       </div>
       <div class="analysis-status" id="analysis-status" aria-live="polite"></div>
+      <div class="requirements-review" id="requirements-review"></div>
 
       <div class="panel" id="tailor-controls-panel" style="display:none;margin-top:18px;">
         <div class="field-label" style="margin-bottom:2px;">Contact info to include</div>
@@ -709,7 +823,7 @@ function renderDashboard(){
 
   const skillGroups = [
     ["Backend Development",2,"advanced"],["Web Development",1,"mid"],["Relational Databases",1,"advanced"],
-    ["Messaging Systems",1,"advanced"],["Cloud Infrastructure",1,"advanced"],["Containerization",1,"mid"],["Other",8,"light"]
+    ["Messaging Systems",1,"advanced"],["Cloud Infrastructure",1,"advanced"],["Containerization",1,"mid"],["Other",Math.max(0,SKILLS.length-7),"light"]
   ];
   const skillChart = document.getElementById("dash-skill-chart");
   if(skillChart) skillChart.innerHTML = skillGroups.map(([label,count,tone])=>`
@@ -722,6 +836,21 @@ function renderDashboard(){
     const count=TRACKER.filter(r=>r.status===status).length;
     return `<div class="pipeline-row"><span>${status}</span><span class="metric-bar"><span class="metric-fill" style="display:block;width:${count?Math.max(18,count/3*100):0}%"></span></span><span class="metric-count">${count}</span></div>`;
   }).join("");
+}
+function resolveDemoSuggestion(action){
+  const card = document.getElementById("demo-suggestion-card");
+  if(!card) return;
+  const count = document.getElementById("demo-review-count");
+  if(count) count.textContent = "0";
+  if(action === "accept" && !SKILLS.some(skill=>skill.id === "SK-016")){
+    SKILLS.unshift({id:"SK-016",cat:"Cloud & Infrastructure",sub:"Monitoring",name:"Production Monitoring",prof:"Intermediate",evidence:"Created operational dashboards and alerts for production services at Halcyon Data.",keywords:["production monitoring","observability","alerts","dashboards"],claim:"Built production monitoring and alerting for customer-facing services.",note:"Fictional portfolio-demonstration record."});
+    renderInventory();
+  }
+  card.classList.remove("v2-card-accent");
+  card.innerHTML = action === "accept"
+    ? `<div class="suggestion-meta">Added to the fictional record</div><h3>Production Monitoring</h3><p>The suggestion is now shown as confirmed for this browser session. Refresh the page to reset the demo.</p><a class="dash-mini-link" href="#" onclick="event.preventDefault();goto('inventory')">See it in the inventory →</a>`
+    : `<div class="suggestion-meta">Suggestion dismissed</div><h3>The confirmed record was not changed</h3><p>This demonstrates the product principle: an AI-assisted suggestion never becomes trusted data without the person’s approval.</p>`;
+  renderDashboard();
 }
 
 /* ---------------- Profile ---------------- */
@@ -1442,8 +1571,8 @@ function analyze(text){
   }
 
   document.getElementById("tailor-empty").style.display = "none";
-  document.getElementById("tailor-results").style.display = "grid";
-  document.getElementById("tailor-controls-panel").style.display = "block";
+  document.getElementById("tailor-results").style.display = "none";
+  document.getElementById("tailor-controls-panel").style.display = "none";
   renderResumeOutput(); renderTailorControls();
 
   document.getElementById("match-panel").innerHTML = `
@@ -1482,6 +1611,38 @@ function analyze(text){
     renderTracker(); renderRecent(); renderFollowUps();
     const b = document.getElementById("at-add"); b.textContent = "Added ✓"; setTimeout(()=>b.textContent="Add to tracker", 1400);
   });
+  renderRequirementsReview(score);
+}
+function setDemoTailorStep(step){
+  ["posting","review","draft"].forEach(name=>document.getElementById("tailor-step-"+name)?.classList.toggle("active",name===step));
+}
+function escapeDemoHtml(value){
+  return String(value).replace(/[&<>"']/g,char=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[char]));
+}
+function renderRequirementsReview(score){
+  const review = document.getElementById("requirements-review");
+  const role = lastPostingDetails.role || "Sample posting";
+  review.innerHTML = `
+    <div class="requirements-head">
+      <div><h3>What the fictional posting asks for</h3><p>${escapeDemoHtml(role)} · prewritten portfolio demonstration</p></div>
+      <strong style="color:var(--ledger);font:600 22px var(--font-display);">${score}% <small style="font:400 11px var(--font-body);color:var(--ink-muted);">sample match</small></strong>
+    </div>
+    <div class="requirement-row"><span>Designing reliable backend services and APIs</span><span class="requirement-status backed">✓ Backed</span><span class="requirement-source">API Design · Backend Development</span></div>
+    <div class="requirement-row"><span>Working with high-volume data pipelines</span><span class="requirement-status backed">✓ Backed</span><span class="requirement-source">Data Pipeline Engineering</span></div>
+    <div class="requirement-row"><span>Cloud reliability and production operations</span><span class="requirement-status thin">○ Thin</span><span class="requirement-source">Some evidence on record</span></div>
+    <div class="requirement-row"><span>Formal staff-level people management</span><span class="requirement-status missing">× Missing</span><span class="requirement-source">No confirmed evidence</span></div>
+    <div class="requirements-foot"><small>These labels are fixed demo content. The production assessment logic is not included.</small><button class="btn btn-primary" onclick="continueToDemoDraft()">Continue to the draft</button></div>`;
+  review.style.display = "block";
+  setDemoTailorStep("review");
+  review.scrollIntoView({behavior:"smooth",block:"start"});
+}
+function continueToDemoDraft(){
+  document.getElementById("requirements-review").style.display = "none";
+  document.getElementById("tailor-controls-panel").style.display = "block";
+  document.getElementById("tailor-results").style.display = "grid";
+  document.getElementById("analysis-status").innerHTML = `<span class="analysis-complete">Simulated draft ready — review the fictional content and choose what to include.</span>`;
+  setDemoTailorStep("draft");
+  document.getElementById("tailor-controls-panel").scrollIntoView({behavior:"smooth",block:"start"});
 }
 function toggleIncludedJob(id){ includedJobIds.has(id) ? includedJobIds.delete(id) : includedJobIds.add(id); renderResumeOutput(); renderTailorControls(); }
 function toggleContactItem(key){ includedContactKeys.has(key) ? includedContactKeys.delete(key) : includedContactKeys.add(key); renderResumeOutput(); }
@@ -1528,6 +1689,8 @@ let analysisTimer;
 function hideTailorOutput(message){
   document.getElementById("tailor-results").style.display = "none";
   document.getElementById("tailor-controls-panel").style.display = "none";
+  document.getElementById("requirements-review").style.display = "none";
+  setDemoTailorStep("posting");
   const empty = document.getElementById("tailor-empty");
   empty.style.display = "block";
   empty.textContent = message;
@@ -1559,7 +1722,7 @@ document.getElementById("analyze-btn").addEventListener("click", ()=>{
   analysisTimer = setTimeout(()=>{
     analyze(text);
     resetAnalyzeButton();
-    statusEl.innerHTML = `<span class="analysis-complete">Analysis complete — review the match score and tailored draft below.</span>`;
+    statusEl.innerHTML = `<span class="analysis-complete">Simulation complete — review the evidence map below, then continue to the draft.</span>`;
   }, 1600);
 });
 document.getElementById("sample-btn").addEventListener("click", ()=>{
